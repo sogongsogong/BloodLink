@@ -10,4 +10,5 @@ import java.util.List;
 public interface BulletinRepository extends CrudRepository<Bulletin, Integer> {
 
     List<Bulletin> findByTitle(String title);
+    List<Bulletin> findByAuthor(String author);
 }

@@ -1,37 +1,51 @@
 package sogongsogong.bloodlink.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.List;
 
-@Entity
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer userId;
-    private String email;
+    private String account;
     private String password;
-    private String name;
-    private Calendar birth;
-    private boolean sex;
     private String phone;
-    private BloodType bloodType;
     private List<BDC> bdcs;
-    private int point;
 
-    public User(Integer userId, String email, String password, String name, Calendar birth, boolean sex, String phone) {
-        this.userId = userId;
-        this.email = email;
+    public User(String account, String password, String phone) {
+        this.account = account;
         this.password = password;
-        this.name = name;
-        this.birth = birth;
-        this.sex = sex;
         this.phone = phone;
-        //bloodtype
-        this.point = 0;
+        this.bdcs = new ArrayList<>();
+    }
+
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public List<BDC> getBdcs() {
+        return bdcs;
+    }
+
+    public void setBdcs(List<BDC> bdcs) {
+        this.bdcs = bdcs;
     }
 }

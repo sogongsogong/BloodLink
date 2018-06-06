@@ -9,5 +9,6 @@ import java.util.List;
 @RepositoryRestResource(collectionResourceRel = "bdc", path = "bdc")
 public interface BDCRepository extends CrudRepository<BDC, Integer> {
 
-    List<BDC> findByNo(String BDCNo);
+    BDC findByNumber(String number);
+    boolean existsByNumber(String number);
 }

@@ -15,16 +15,71 @@ public class Bulletin {
     private String author;
     private boolean expire;
     private int goal;
-    private int rate;
+    private int count;
     private String content;
 
-    public Bulletin(Integer bulletinId, String title, String author, int goal, String content) {
-        this.bulletinId = bulletinId;
+    public Bulletin(String title, String author, int goal, String content) {
         this.title = title;
         this.author = author;
         this.expire = false;
         this.goal = goal;
-        this.rate = 0;
+        this.count = 0;
+        this.content = content;
+    }
+
+    public Integer getBulletinId() {
+        return bulletinId;
+    }
+
+    public void setBulletinId(Integer bulletinId) {
+        this.bulletinId = bulletinId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public boolean isExpire() {
+        return expire;
+    }
+
+    public void setExpire(boolean expire) {
+        this.expire = expire;
+    }
+
+    public int getGoal() {
+        return goal;
+    }
+
+    public void setGoal(int goal) {
+        this.goal = goal;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
         this.content = content;
     }
 }
