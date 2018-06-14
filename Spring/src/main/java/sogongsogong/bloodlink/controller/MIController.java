@@ -20,18 +20,18 @@ public class MIController extends UserController{
 
     @Autowired
     private MIRepository miRepository;
-    /*@Autowired
-    private BDCRepository bdcRepository;*/
+    @Autowired
+    private BDCRepository bdcRepository;
 
     @RequestMapping(path = "/login")
     public boolean login(@RequestParam String account, @RequestParam String password) {
         MI mi = miRepository.findByAccount(account);
         return login(mi, password);
     }
-
-    @RequestMapping(method = GET, path = "/search")
-    public String search(@RequestParam String account) {
-        String result="";
+    
+    @RequestMapping(method = GET, path = "/identify")
+    public String identify(@RequestParam String account) {
+        String result = "";
         if(miRepository.existsByAccount(account)) {
             MI mi = miRepository.findByAccount(account);
             result += mi.getAccount();
@@ -39,7 +39,18 @@ public class MIController extends UserController{
         return result;
     }
 
-    @RequestMapping(method = GET, path = "/load")
+    @RequestMappring(method = GET, path = "/search/account")
+    public String searchByAccount(@RequestParam String account) {
+        StringBuffer buffer = new StringBuffer();
+        List<BDC> bdcs = bdcRepository.findByUsage(account);
+        for(BDC bdc:bdcs) {
+            if(bdc.get)
+            buffer.append(bdc.toString()+"\\r\\n");
+        }
+        return buffer.toString();
+    }
+
+    @RequestMapping(method = GET, path = "/search/n")
     public String load(@RequestParam String account) {
         StringBuffer buffer = new StringBuffer();
         if(miRepository.existsByAccount(account)) {
@@ -51,4 +62,6 @@ public class MIController extends UserController{
         }
         return buffer.toString();
     }
+
+
 }

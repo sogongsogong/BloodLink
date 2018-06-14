@@ -8,6 +8,7 @@ public abstract class UserController {
     public boolean login(User user, String password) {
         return user.getPassword().equals(password);
     }
+    
     abstract public String search(String account);
 
 }

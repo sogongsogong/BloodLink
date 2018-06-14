@@ -20,10 +20,10 @@ public class BDCController {
     @Autowired
     private BDCRepository bdcRepository;
 
-    private final String REGISTER = "bdc 등록";
-    private final String DUPLICATE = "bdc 중복";
-    private final String AVAIL = "bdc 등록 가능";
-    private final String WRONG = "잘못된 bdc 번호";
+    private final String REGISTER = "registered";
+    private final String DUPLICATE = "duplicate";
+    private final String AVAIL = "avail";
+    private final String WRONG = "wrong";
 
     @RequestMapping(path="/register")
     public String register(@RequestParam String number, @RequestParam String type, @RequestParam String name, @RequestParam Calendar birth, @RequestParam boolean sex, @RequestParam Calendar date, @RequestParam String place, @RequestParam String owner) {
@@ -32,12 +32,13 @@ public class BDCController {
 
     public String register(BDC bdc) {
         String result = "";
-        if(check(bdc.getNumber()).equals(AVAIL)) {
+        String check = check(bdc.getNumber());
+        if(check.equals(AVAIL)) {
             bdc.setValid(true);
             bdcRepository.save(bdc);
             result += REGISTER;
         } else {
-            result += WRONG;
+            result += check;
         }
         return result;
     }
@@ -57,19 +58,22 @@ public class BDCController {
         return result;
     }
 
-    @RequestMapping(method = GET, path="/search")
-    public BDC search(@RequestParam String number) {
+    @RequestMapping(method = GET, path="/identify")
+    public BDC identify(@RequestParam String number) {
         return bdcRepository.findByNumber(number);
     }
 
-    public List<BDC> read() {
+    /*
+    @RequestMapping(method = GET, path="/search/mi/account")
+    public List<BDC> search(@RequestParam String account) {
+        if(bdcRepository.ex)
         List<BDC> list = new ArrayList<>();
         Iterable<BDC> bdcs = bdcRepository.findAll();
         bdcs.forEach(list::add);
         return list;
-    }
+    }*/
 
-    /*
+    
     @RequestMapping(path="/approve")
     public boolean update(@RequestParam String number) {
         boolean approve = false;
@@ -81,7 +85,7 @@ public class BDCController {
         }
         return approve;
     }
-    */
+    
 
 
     public boolean update(String number, boolean valid) {
@@ -107,4 +111,6 @@ public class BDCController {
         }
         return send;
     }
+
+    @RequestMapping(path="")
 }
