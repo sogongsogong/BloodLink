@@ -13,8 +13,8 @@ public class MI extends User {
     private Integer miId;
     private String address;
 
-    public MI(String account, String password, String phone, String address) {
-        super(account, password, phone);
+    public MI(String account, String password, String name, String phone, String address) {
+        super(account, password, name, phone);
         this.address = address;
     }
 

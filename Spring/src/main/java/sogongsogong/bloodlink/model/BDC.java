@@ -12,6 +12,7 @@ public class BDC {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer bdcId;
+
     private String number;
     private String type;
     private String name;
@@ -113,4 +114,6 @@ public class BDC {
     public void setValid(boolean valid) {
         this.valid = valid;
     }
+
+
 }

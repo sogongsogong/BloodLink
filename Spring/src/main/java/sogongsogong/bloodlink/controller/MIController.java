@@ -4,33 +4,51 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import sogongsogong.bloodlink.model.BDC;
 import sogongsogong.bloodlink.model.MI;
+import sogongsogong.bloodlink.model.User;
+import sogongsogong.bloodlink.repository.BDCRepository;
 import sogongsogong.bloodlink.repository.MIRepository;
+
+import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @RestController
 @RequestMapping(path="/mi")
-public class MIController {
+public class MIController extends UserController{
 
     @Autowired
     private MIRepository miRepository;
+    /*@Autowired
+    private BDCRepository bdcRepository;*/
 
     @RequestMapping(path = "/login")
     public boolean login(@RequestParam String account, @RequestParam String password) {
         MI mi = miRepository.findByAccount(account);
-        boolean success = false;
-        if(miRepository.existsByAccount(account) && mi.getPassword().equals(password)) {
-            success = true;
+        return login(mi, password);
+    }
+
+    @RequestMapping(method = GET, path = "/search")
+    public String search(@RequestParam String account) {
+        String result="";
+        if(miRepository.existsByAccount(account)) {
+            MI mi = miRepository.findByAccount(account);
+            result += mi.getAccount();
         }
-        return success;
+        return result;
     }
 
-    @RequestMapping(method = GET, path="/search")
-    public MI search(@RequestParam String account) {
-        return miRepository.findByAccount(account);
+    @RequestMapping(method = GET, path = "/load")
+    public String load(@RequestParam String account) {
+        StringBuffer buffer = new StringBuffer();
+        if(miRepository.existsByAccount(account)) {
+            BDCRepository bdcRepository = null;
+            List<BDC> bdcs = bdcRepository.findByOwner(account);
+            for(BDC bdc:bdcs) {
+                buffer.append(bdc.toString()+"\\r\\n");
+            }
+        }
+        return buffer.toString();
     }
-
-
-
 }

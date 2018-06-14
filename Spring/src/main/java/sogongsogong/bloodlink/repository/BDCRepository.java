@@ -11,4 +11,7 @@ public interface BDCRepository extends CrudRepository<BDC, Integer> {
 
     BDC findByNumber(String number);
     boolean existsByNumber(String number);
+
+    List<BDC> findByOwner(String owner);
+    boolean existsByOwner(String owner);
 }

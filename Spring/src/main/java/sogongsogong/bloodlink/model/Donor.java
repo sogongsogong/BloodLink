@@ -12,16 +12,14 @@ public class Donor extends User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer donorId;
-    private String name;
     private Calendar birth;
     private boolean sex;
     private String rh;
     private String abo;
     private int point;
 
-    public Donor(String account, String password, String phone, String name, Calendar birth, boolean sex, String rh, String abo) {
-        super(account, password, phone);
-        this.name = name;
+    public Donor(String account, String password, String name, String phone, Calendar birth, boolean sex, String rh, String abo) {
+        super(account, password, name, phone);
         this.birth = birth;
         this.sex = sex;
         this.rh = rh;
@@ -35,14 +33,6 @@ public class Donor extends User {
 
     public void setDonorId(Integer donorId) {
         this.donorId = donorId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public Calendar getBirth() {

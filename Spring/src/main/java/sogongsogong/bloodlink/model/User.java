@@ -1,20 +1,17 @@
 package sogongsogong.bloodlink.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class User {
 
     private String account;
     private String password;
+    private String name;
     private String phone;
-    private List<BDC> bdcs;
 
-    public User(String account, String password, String phone) {
+    public User(String account, String password, String name, String phone) {
         this.account = account;
         this.password = password;
+        this.name = name;
         this.phone = phone;
-        this.bdcs = new ArrayList<>();
     }
 
     public String getAccount() {
@@ -33,6 +30,14 @@ public class User {
         this.password = password;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getPhone() {
         return phone;
     }
@@ -41,11 +46,4 @@ public class User {
         this.phone = phone;
     }
 
-    public List<BDC> getBdcs() {
-        return bdcs;
-    }
-
-    public void setBdcs(List<BDC> bdcs) {
-        this.bdcs = bdcs;
-    }
 }
