@@ -35,7 +35,6 @@ public class Login extends JFrame{
 	public Login()
 	{
 		super("BLOOD_LINK");
-		//getContentPane().setBackground(Color.ORANGE);
 		setContentPane(new JLabel(new ImageIcon("icon\\heart.jpg")));
 		setLocation(730, 300);//프레임위치 설정
 		setSize(550,400);// 프레임크기 설정
@@ -130,7 +129,7 @@ public class Login extends JFrame{
 				if(findMember(id.getText(), password.getText()))
 				{
 					dispose();
-					new BloodBoard();
+					new BloodBoard(id.getText());
 				}
 				else
 				{
@@ -152,7 +151,7 @@ public class Login extends JFrame{
 
 		try
 		{
-			Scanner scan= new Scanner(new File("C:\\Users\\june\\Desktop\\SoftwareEngineering\\member.txt"));
+			Scanner scan= new Scanner(new File("C:\\Users\\june\\Desktop\\BloodLink\\Java\\SoftwareEngineering\\member.txt"));
 			while(scan.hasNextLine())
 			{
 				if(member.equals(scan.nextLine()))
@@ -166,7 +165,7 @@ public class Login extends JFrame{
 		return false;
 	}
 	
-	public void buttonHide(JButton button)
+	public void buttonHide(JButton button)//button처리
 	{
 		button.setBackground(new Color(255,255,255));
 		button.setOpaque(false);

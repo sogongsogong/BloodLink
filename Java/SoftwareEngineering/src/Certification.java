@@ -1,18 +1,17 @@
 
 public class Certification {
 	//«Â«Ê¡ı∞¥√º
-	private String name,email,date,state,phoneNumber;//«Â«˜¡ı¡§∫∏
+	private String name,email,date,state,certnum;//«Â«˜¡ı¡§∫∏
 	
 	public Certification()
 	{
 		
 	}
-	public Certification(String name,String email,String phoneNumber,String date,String state) 
+	public Certification(String certnum,String name,String email,String state) 
 	{
+		this.certnum=certnum;
 		this.name=name;
 		this.email=email;
-		this.phoneNumber=phoneNumber;
-		this.date=date;
 		this.state=state;
 	}
 	public String getName() {
@@ -39,12 +38,13 @@ public class Certification {
 	public void setState(String state) {
 		this.state = state;
 	}
-	public String getPhoneNumber() {
-		return phoneNumber;
+	public String getCertnum() {
+		return certnum;
 	}
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
+	public void setCertnum(String certnum) {
+		this.certnum = certnum;
 	}
+
 	
 
 }

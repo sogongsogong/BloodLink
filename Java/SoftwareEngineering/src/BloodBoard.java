@@ -33,18 +33,19 @@ import javax.swing.table.TableColumnModel;
 public class BloodBoard extends JFrame{
 	
 	private JTable table;//데이터 테이블
-	private JScrollPane jScollPane;//데이터 테이블이 들어가는 scroll
+	private JScrollPane jscroll;//데이터 테이블이 들어가는 scroll
 	private DefaultTableModel mod;
 	private JLabel title;//타이틀 "헌혈증서사용상태"
 	private JComboBox<String> comboStandard, comboStatus;//조회기준이 들어있는 콤보박스,신청상태가 들어있는 콤보박스
 	private JTextField searchText;//검색 텍스트 필드
 	private JButton search,delete,approve;//사용할 버튼들
-	private String columnNames[]={ "번호", "사용자이름", "사용자이메일", "전화번호","등록일","신청상태" };
+	private String columnNames[]={ "증서번호", "사용자이름", "사용자이메일","신청상태" };
 	private String rowData[][],rowDataTemp[][];//테이블에 들어갈 데이터들
 	private CertificationList CertList;//헌혈증목록
 	private JFrame frame;
+	private String id;
 	
-	public BloodBoard()
+	public BloodBoard(String id)
 	{
 		super("BLOOD_Board");
 		setLocation(360, 225);//프레임위치 설정
@@ -52,6 +53,8 @@ public class BloodBoard extends JFrame{
 		setContentPane(new JLabel(new ImageIcon("icon\\pulse1.jpg")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//close박스
 		setLayout(null);//레이아웃 널값
+		
+		this.id=id;//ID받아오기
 		
 		Toolkit tk=Toolkit.getDefaultToolkit();
 		Image img= tk.getImage("icon\\frameicon.png");
@@ -117,11 +120,13 @@ public class BloodBoard extends JFrame{
 				if(searchText.getText().equals(""))//새로고침
 				{
 					SearchInfo();
+					jscroll.setVisible(false);
 					TableSet(rowData);
 				}
 				else//검색
 				{
 					SearchInfo(searchText.getText(),comboStandard.getSelectedIndex(),comboStatus.getSelectedIndex());
+					jscroll.setVisible(false);
 					TableSet(rowDataTemp);
 				}
 			}
@@ -135,7 +140,7 @@ public class BloodBoard extends JFrame{
 	{
 		try
 		{
-			File is = new File("C:\\Users\\june\\Desktop\\SoftwareEngineering\\table.txt");
+			File is = new File("C:\\Users\\june\\Desktop\\BloodLink\\Java\\SoftwareEngineering\\table.txt");
 			BufferedReader bf = new BufferedReader(new FileReader(is));
 			String row;
 			ArrayList<String[]> rData=new ArrayList<String[]>();
@@ -147,7 +152,8 @@ public class BloodBoard extends JFrame{
 			}
 			bf.close();
 			bf=new BufferedReader(new FileReader(is));
-			rowData=new String[i][6];
+			
+			rowData=new String[i][4];
 			i=0;
 			while ((row = bf.readLine()) != null) 
 			{	 
@@ -164,7 +170,7 @@ public class BloodBoard extends JFrame{
 	{
 		try
 		{
-			File is = new File("C:\\Users\\june\\Desktop\\SoftwareEngineering\\table.txt");
+			File is = new File("C:\\Users\\june\\Desktop\\BloodLink\\Java\\SoftwareEngineering\\table.txt");
 			BufferedReader bf = new BufferedReader(new FileReader(is));
 			String row;
 			ArrayList<String[]> rData=new ArrayList<String[]>();
@@ -182,7 +188,7 @@ public class BloodBoard extends JFrame{
 				{
 					if(sindex!=0)
 					{
-						if(row.split(" ")[6].equals(status))
+						if(row.split(" ")[4].equals(status))
 							count++;
 					}
 					else 
@@ -192,7 +198,7 @@ public class BloodBoard extends JFrame{
 			}
 			bf.close();
 			bf=new BufferedReader(new FileReader(is));
-			rowDataTemp=new String[count][6];
+			rowDataTemp=new String[count][4];
 			i=0;
 			while ((row = bf.readLine()) != null) 
 			{	
@@ -200,7 +206,7 @@ public class BloodBoard extends JFrame{
 				{
 					if(sindex!=0)
 					{
-						if(row.split(" ")[6].equals(status))
+						if(row.split(" ")[4].equals(status))
 							rowDataTemp[i++]=row.split(" ");   
 					}
 					else 
@@ -237,13 +243,14 @@ public class BloodBoard extends JFrame{
 	}
 	public void ComboBoxSet()//combobox생성
 	{
-		String status[] = {"사용상태(전체)","사용대기","사용완료"};
+		String status[] = {"신청상태(전체)","사용대기","사용완료"};
 		comboStatus= new JComboBox<String>(status);//사용상태 콤보박스생성
 		comboStatus.setBounds(385,50,130,40);
 		comboStatus.setBackground(Color.WHITE);
 		comboStatus.setFont(new Font("", 1, 15));
 		
-		comboStandard = new JComboBox<String>(columnNames);//comboStandardbox생성
+		String standard[]= {"증서번호", "사용자이름", "사용자이메일" };
+		comboStandard = new JComboBox<String>(standard);//comboStandardbox생성
 		comboStandard.setBounds(525, 50, 110, 40);
 		comboStandard.setBackground(Color.WHITE);
 		comboStandard.setFont(new Font("", 1, 15));
@@ -265,20 +272,18 @@ public class BloodBoard extends JFrame{
         table.setFont(new Font("", 1, 15));//table font 크기조절
         table.setRowHeight(40);
         TableFontSort();//글씨 가운데 정렬
-        
-        jScollPane = new JScrollPane(table);//scroll 생성
-		jScollPane.setBounds(85, 120, 1030, 500);//크기설정
-		jScollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);//수직방향스크롤
-		add(jScollPane);
+   
+        jscroll = new JScrollPane(table);//scroll 생성
+		jscroll.setBounds(85, 120, 1030, 500);//크기설정
+		jscroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);//수직방향스크롤
+		add(jscroll);
 		return ;
 	}
 	public void TableWidth()//테이블 열 간격조절
 	{
-		table.getColumn("번호").setPreferredWidth(5);
+		table.getColumn("증서번호").setPreferredWidth(5);
 		table.getColumn("사용자이름").setPreferredWidth(20);
 		table.getColumn("사용자이메일").setPreferredWidth(110);
-		table.getColumn("전화번호").setPreferredWidth(60);
-		table.getColumn("등록일").setPreferredWidth(15);
 		table.getColumn("신청상태").setPreferredWidth(10);
 	}
 	public void TableFontSort()//table 글씨 정렬

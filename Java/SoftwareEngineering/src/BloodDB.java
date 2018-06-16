@@ -3,71 +3,62 @@ import java.sql.Connection;
 import java.util.*;
 import java.sql.DriverManager;
 import java.util.Map;
+
+import javax.xml.ws.Response;
+import javax.xml.ws.soap.AddressingFeature.Responses;
+
 import java.awt.List;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.*;
+import org.apache.*;
+import org.apache.http.*;
 public class BloodDB {
 
-
-//	private final String URL = "jdbc:mysql://58.235.168.126:3306/plan?useUnicode=true&characterEncoding=utf8";
 	
 	public BloodDB()
 	{
+		// /BDC/search ?parameter&parameter&parameter
 		
 	}
 
-	public void getC() throws Exception
+	public boolean getLogin() throws Exception
 	{
-		URL url = new URL("http://javaking75.blog.me/rss");
-        
-        // 문자열로 URL 표현
-        System.out.println("URL :" + url.toExternalForm());
-        
-        // HTTP Connection 구하기 
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        
-        // 요청 방식 설정 ( GET or POST or .. 별도로 설정하지않으면 GET 방식 )
-        conn.setRequestMethod("GET"); 
-        
-        // 연결 타임아웃 설정 
-        conn.setConnectTimeout(3000); // 3초 
-        // 읽기 타임아웃 설정 
-        conn.setReadTimeout(3000); // 3초 
-        
-        // 요청 방식 구하기
-        System.out.println("getRequestMethod():" + conn.getRequestMethod());
-        // 응답 콘텐츠 유형 구하기
-        System.out.println("getContentType():" + conn.getContentType());
-        // 응답 코드 구하기
-        System.out.println("getResponseCode():"    + conn.getResponseCode());
-        // 응답 메시지 구하기
-        System.out.println("getResponseMessage():" + conn.getResponseMessage());
-        
-        
-        // 응답 헤더의 정보를 모두 출력
-        for (Map.Entry<String, java.util.List<String>> header : conn.getHeaderFields().entrySet()) {
-            for (String value : header.getValue()) {
-                System.out.println(header.getKey() + " : " + value);
-            }
-        }
-        
-        // 응답 내용(BODY) 구하기        
-        try (InputStream in = conn.getInputStream();
-                ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-            
-            byte[] buf = new byte[1024 * 8];
-            int length = 0;
-            while ((length = in.read(buf)) != -1) {
-                out.write(buf, 0, length);
-            }
-            System.out.println(new String(out.toByteArray(), "UTF-8"));            
-        }
-        
-        // 접속 해제
-        conn.disconnect();
+		URL url = new URL("http://localhost:8080/RESTfulExample/json/product/post");
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setDoOutput(true);
+		conn.setRequestMethod("POST");
+		conn.setRequestProperty("Content-Type", "application/json");
+
+	 	String input = "{\"qty\":100,\"name\":\"iPad 4\"}";
+
+		OutputStream os = conn.getOutputStream();
+		os.write(input.getBytes());
+		os.flush();
+		
+		if (conn.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
+		throw new RuntimeException("Failed : HTTP error code : "
+			+ conn.getResponseCode());
+		}
+
+		BufferedReader br = new BufferedReader(new InputStreamReader(
+			(conn.getInputStream())));
+
+		String output;
+		System.out.println("Output from Server .... \n");
+		while ((output = br.readLine()) != null) {
+			System.out.println(output);
+		}
+
+		conn.disconnect();
+
+		if(output.equals("true"))
+			return true;
+		else
+			return false;
 	}
 }
