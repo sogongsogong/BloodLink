@@ -46,4 +46,12 @@ public class User {
         this.phone = phone;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "account='" + account + '\'' +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                '}';
+    }
 }

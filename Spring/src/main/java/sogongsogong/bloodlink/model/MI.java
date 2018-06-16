@@ -33,4 +33,9 @@ public class MI extends User {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }

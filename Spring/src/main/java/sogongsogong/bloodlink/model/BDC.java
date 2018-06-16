@@ -125,5 +125,19 @@ public class BDC {
         this.valid = valid;
     }
 
-    //toString
+    @Override
+    public String toString() {
+        return "BDC{" +
+                ", number='" + number + '\'' +
+                ", type='" + type + '\'' +
+                ", name='" + name + '\'' +
+                ", birth=" + birth +
+                ", sex=" + sex +
+                ", date=" + date +
+                ", place='" + place + '\'' +
+                ", owner='" + owner + '\'' +
+                ", usage='" + usage + '\'' +
+                ", valid=" + valid +
+                '}';
+    }
 }

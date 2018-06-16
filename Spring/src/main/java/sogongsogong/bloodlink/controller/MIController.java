@@ -4,13 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import sogongsogong.bloodlink.model.BDC;
 import sogongsogong.bloodlink.model.MI;
-import sogongsogong.bloodlink.model.User;
-import sogongsogong.bloodlink.repository.BDCRepository;
 import sogongsogong.bloodlink.repository.MIRepository;
-
-import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
@@ -20,8 +15,8 @@ public class MIController extends UserController{
 
     @Autowired
     private MIRepository miRepository;
-    @Autowired
-    private BDCRepository bdcRepository;
+    //@Autowired
+    //private BDCRepository bdcRepository;
 
     @RequestMapping(path = "/login")
     public boolean login(@RequestParam String account, @RequestParam String password) {
@@ -29,18 +24,19 @@ public class MIController extends UserController{
         return login(mi, password);
     }
     
-    @RequestMapping(method = GET, path = "/identify")
-    public String identify(@RequestParam String account) {
+    @RequestMapping(method = GET, path = "/search")
+    public String search(@RequestParam String account) {
         String result = "";
         if(miRepository.existsByAccount(account)) {
             MI mi = miRepository.findByAccount(account);
-            result += mi.getAccount();
+            result += mi.toString();
         }
         return result;
     }
 
-    @RequestMappring(method = GET, path = "/search/account")
-    public String searchByAccount(@RequestParam String account) {
+    /*
+    @RequestMappring(method = GET, path = "/bdcs")
+    public String (@RequestParam String account) {
         StringBuffer buffer = new StringBuffer();
         List<BDC> bdcs = bdcRepository.findByUsage(account);
         for(BDC bdc:bdcs) {
@@ -61,7 +57,6 @@ public class MIController extends UserController{
             }
         }
         return buffer.toString();
-    }
-
+    }*/
 
 }
