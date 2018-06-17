@@ -15,6 +15,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.*;
+import java.net.ProtocolException;
+
 import org.apache.*;
 import org.apache.http.*;
 public class BloodDB {
@@ -26,39 +28,45 @@ public class BloodDB {
 		
 	}
 
-	public boolean getLogin() throws Exception
+	public String getLogin()
 	{
-		URL url = new URL("http://localhost:8080/RESTfulExample/json/product/post");
-		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		conn.setDoOutput(true);
-		conn.setRequestMethod("POST");
-		conn.setRequestProperty("Content-Type", "application/json");
+		 String address = ""; // 서버주소
+		    StringBuffer buffer = null;
+		    try{
+		        //연결, 송신
+		        String parameter = "?"; //파라미터, 변수1=값1
+		        String value = "변수1=" + URLEncoder.encode("값1","utf-8"); // 값 넣을때는 URLEncoder로 인코딩해서 값 넣어줘야합니다.  
+		        parameter += value; // 파라미터는 ?변수1=값1&변수2=값2... 이렇게 연결되고요, &로 파라미터(변수) 구분됩니다.
+		        address += parameter; //실질적으로 서버주소에 파라미터값이 더해져서 요청하는 url이 완성됩니다. 주석된 부분은 수정하신다고 보시면 되요
 
-	 	String input = "{\"qty\":100,\"name\":\"iPad 4\"}";
+		        URL url = new URL(address);
+		        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+		        connection.setRequestMethod(""); // POST, GET, PUT 중 택
 
-		OutputStream os = conn.getOutputStream();
-		os.write(input.getBytes());
-		os.flush();
-		
-		if (conn.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
-		throw new RuntimeException("Failed : HTTP error code : "
-			+ conn.getResponseCode());
-		}
-
-		BufferedReader br = new BufferedReader(new InputStreamReader(
-			(conn.getInputStream())));
-
-		String output;
-		System.out.println("Output from Server .... \n");
-		while ((output = br.readLine()) != null) {
-			System.out.println(output);
-		}
-
-		conn.disconnect();
-
-		if(output.equals("true"))
-			return true;
-		else
-			return false;
+		        //수신
+		        BufferedReader reader = null;
+		        int code = connection.getResponseCode();
+		        if(code == 200) {
+		            reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		        } else {
+		            //연결안됨
+		            //reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+		        }
+		        buffer = new StringBuffer();
+		        String string;
+		        while((string = reader.readLine()) != null) {
+		            buffer.append(string);
+		        }
+		        reader.close();
+		    } catch (ProtocolException e) {
+		        e.printStackTrace();
+		    } catch (MalformedURLException e) {
+		        e.printStackTrace();
+		    } catch (IOException e) {
+		        e.printStackTrace();
+		    } catch (NullPointerException e) {
+		        e.printStackTrace();
+		    }
+		    return buffer.toString();
 	}
 }
