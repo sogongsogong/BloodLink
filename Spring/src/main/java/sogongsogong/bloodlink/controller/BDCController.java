@@ -1,75 +1,117 @@
 package sogongsogong.bloodlink.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import sogongsogong.bloodlink.model.BDC;
 import sogongsogong.bloodlink.repository.BDCRepository;
 
-import java.util.Calendar;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
-@RequestMapping(path = "/bdc")
+@RequestMapping("/bdc")
 public class BDCController {
 
     @Autowired
     private BDCRepository bdcRepository;
 
-    private final String REGISTER = "registered";
-    private final String DUPLICATE = "duplicate";
-    private final String AVAIL = "avail";
-    private final String WRONG = "wrong";
-
-
-
-    @RequestMapping(path = "/register")
-    public String register(@RequestParam String number, @RequestParam String type, @RequestParam String name, @RequestParam Calendar birth, @RequestParam boolean sex, @RequestParam Calendar date, @RequestParam String place, @RequestParam String owner) {
+    /*@RequestMapping(value = "/register", method = POST)
+    public boolean register(@RequestParam String number, @RequestParam() String type, @RequestParam String name, @RequestParam Calendar birth, @RequestParam boolean sex, @RequestParam Calendar date, @RequestParam String place, @RequestParam String owner) {
         return register(new BDC(number, type, name, birth, sex, date, place, owner));
-    }
+    }*/
 
-    public String register(BDC bdc) {
-        String result = "";
-        String check = check(bdc.getNumber());
-        if(check.equals(AVAIL)) {
+    @RequestMapping(value = "/register", method = POST)
+    public boolean register(@RequestBody BDC bdc) {
+        boolean response = false;
+        String number = bdc.getNumber();
+        JsonNode jsonNode = null;
+        try {
+            jsonNode = new ObjectMapper().readTree(check(number));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(jsonNode.path("bdc").textValue().equals("avail")) {
             bdc.setValid(true);
             bdcRepository.save(bdc);
-            result += REGISTER;
-        } else {
-            result += check;
+            response = true;
         }
-        return result;
+        return response;
     }
 
-    @RequestMapping(method = GET, path = "/check")
+    @RequestMapping(value = "/check", method = GET)
     public String check(@RequestParam String number) {
-        String result = "";
+        String response = "{\"bdc\":\"";
         if(bdcRepository.existsByNumber(number)) {
-            result += DUPLICATE;
+            response += "exist";
         } else {
             if(number.matches("\\d{2}-\\d{2}-\\d{6}")) {
-                result += AVAIL;
+                response += "avail";
             } else {
-                result += WRONG;
+                response += "wrong";
             }
         }
-        return result;
+        return response + "\"}";
     }
 
-    @RequestMapping(method = GET, path = "/search")
-    public String search(@RequestParam String number) {
-        String result = "";
-        if(bdcRepository.existsByNumber(number)) {
-            result += bdcRepository.findByNumber(number).toString();
+    @RequestMapping(value = "/search/{account}", method = GET)
+    public List<BDC> search(@PathVariable(required = false) String account, @RequestParam(required = false) String key, @RequestParam(required = false) String value) {
+        List<BDC> bdcs = bdcRepository.findByOwner(account);
+        Iterator<BDC> iterator = bdcs.iterator();
+        List<BDC> list = new ArrayList<>();
+        while(iterator.hasNext()) {
+            BDC bdc = iterator.next();
+            boolean match = false;
+            if(bdc.getUsage().length() == 0) {
+                if(key == null || value == null) {
+                    match = true;
+                } else {
+                    if(key.equals("number")) {
+                        if(bdc.getNumber().equals(value)) {
+                            match = true;
+                        }
+                    } else if(key.equals("type")) {
+                        if(bdc.getType().equals(value)) {
+                            match = true;
+                        }
+                    } else if(key.equals("valid")) {
+                        if(value.equals("yes")) {
+                            if(bdc.isValid()) {
+                                match = true;
+                            }
+                        } else if(value.equals("no")) {
+                            if(!bdc.isValid()) {
+                                match = true;
+                            }
+                        } else if(value.equals("all")) {
+                            match = true;
+                        }
+                    }
+                }
+            }
+            if(match) {
+                list.add(bdc);
+            }
         }
-        return result;
+        return list;
     }
 
-    @RequestMapping(method = PUT, path = "/update")
-    public boolean update(String number, boolean valid) {
+    @RequestMapping(value = "/{number}", method = GET)
+    public BDC info(@PathVariable String number) {
+        BDC bdc = null;
+        if(bdcRepository.existsByNumber(number)) {
+            bdc = bdcRepository.findByNumber(number);
+        }
+        return bdc;
+    }
+
+    @RequestMapping(value = "/{number}/update", method = PUT)
+    public boolean update(@PathVariable String number, @RequestParam boolean valid) {
         boolean change = false;
         if(bdcRepository.existsByNumber(number)) {
             BDC bdc = bdcRepository.findByNumber(number);
@@ -82,19 +124,23 @@ public class BDCController {
         return change;
     }
 
-    @RequestMapping(method = PUT, path = "/send")
-    public boolean send(@RequestParam String number, @RequestParam String target, @RequestParam String account) {
+    @RequestMapping(value = "/{number}/send/{target}", method = PUT)
+    public boolean send(@PathVariable String number, @PathVariable String target, @RequestParam String account) {
         boolean send = false;
-        if(bdcRepository.existsByNumber(number)) {
-            BDC bdc = bdcRepository.findByNumber(number);
-            if(target.equals("donee")) {
-                bdc.setOwner(account);
-            } else if(target.equals("mi")) {
-                bdc.setUsage(account);
-            } else {
-                bdc.setUsage("");
+        if (bdcRepository.existsByNumber(number)) {
+            BDC bdc = info(number);
+            if (bdc != null && bdc.isValid()) {
+                if (target.equals("donee")) {
+                    bdc.setOwner(account);
+                    send = true;
+                } else if (target.equals("mi")) {
+                    bdc.setUsage(account);
+                    send = true;
+                } else {
+                    bdc.setUsage("");
+                }
+                bdcRepository.save(bdc);
             }
-            bdcRepository.save(bdc);
         }
         return send;
     }

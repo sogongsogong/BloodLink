@@ -13,14 +13,16 @@ public class Bulletin {
     private Integer bulletinId;
     private String title;
     private String author;
+    private String name;
     private boolean expire;
     private int goal;
     private int count;
     private String content;
 
-    public Bulletin(String title, String author, int goal, String content) {
+    public Bulletin(String title, String author, String name, int goal, String content) {
         this.title = title;
         this.author = author;
+        this.name = name;
         this.expire = false;
         this.goal = goal;
         this.count = 0;
@@ -49,6 +51,14 @@ public class Bulletin {
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String author) {
+        this.name = name;
     }
 
     public boolean isExpire() {

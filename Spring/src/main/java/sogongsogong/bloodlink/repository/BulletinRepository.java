@@ -11,4 +11,6 @@ public interface BulletinRepository extends CrudRepository<Bulletin, Integer> {
 
     List<Bulletin> findByTitle(String title);
     List<Bulletin> findByAuthor(String author);
+    List<Bulletin> findByName(String name);
+    List<Bulletin> findByExpire(boolean expire);
 }
