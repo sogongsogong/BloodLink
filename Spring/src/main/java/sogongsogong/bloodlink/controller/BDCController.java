@@ -67,7 +67,7 @@ public class BDCController {
         while(iterator.hasNext()) {
             BDC bdc = iterator.next();
             boolean match = false;
-            if(bdc.getUsage().length() == 0) {
+            if(bdc.getDest().length() == 0) {
                 if(key == null || value == null) {
                     match = true;
                 } else {
@@ -134,10 +134,10 @@ public class BDCController {
                     bdc.setOwner(account);
                     send = true;
                 } else if (target.equals("mi")) {
-                    bdc.setUsage(account);
+                    bdc.setDest(account);
                     send = true;
                 } else {
-                    bdc.setUsage("");
+                    bdc.setDest("");
                 }
                 bdcRepository.save(bdc);
             }

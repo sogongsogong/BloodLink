@@ -81,12 +81,12 @@ public class MIController extends UserController{
 
     @RequestMapping(value = "/{account}", method = GET)
     public MI info(@PathVariable String account) {
-        return (MI)miRepository.findByAccount(account).get(0);
+        return miRepository.findByAccount(account).get(0);
     }
 
     @RequestMapping(value = "/{account}/queue", method = GET) //all, wait, used
     public String queue(@PathVariable String account, @RequestParam(required = false) String stat, @RequestParam(required = false) String key, @RequestParam(required = false) String value) {
-        List<BDC> bdcs = bdcRepository.findByUsage(account);
+        List<BDC> bdcs = bdcRepository.findByDest(account);
         Iterator<BDC> iterator = bdcs.iterator();
         StringBuffer buffer = new StringBuffer();
         while(iterator.hasNext()) {
@@ -149,7 +149,7 @@ public class MIController extends UserController{
                 bdc.setValid(false);
                 response = true;
             } else if(use.equals("recall")) {
-                bdc.setUsage("");
+                bdc.setDest("");
                 bdc.setValid(true);
                 response = true;
             }

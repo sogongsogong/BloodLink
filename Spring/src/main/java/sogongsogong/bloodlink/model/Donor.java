@@ -15,7 +15,7 @@ public class Donor extends User {
     private String rh;
     private String abo;
     private int point;
-    private String account;
+
 
     @OneToMany
     @JoinColumn(name="owner")
@@ -31,6 +31,7 @@ public class Donor extends User {
         this.point = 0;
     }
 
+    @Override
     public String getAccount(){
         return super.getAccount();
     }

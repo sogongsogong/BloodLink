@@ -36,7 +36,7 @@ public class BDC {
         this.date = date;
         this.place = place;
         this.owner = owner;
-        //this.dest = "";
+        this.dest = "";
         this.valid = false;
     }
 

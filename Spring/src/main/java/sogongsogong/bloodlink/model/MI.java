@@ -11,7 +11,7 @@ public class MI extends User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer miId;
     private String address;
-    private String account;
+    //private String account;
 
    @OneToMany
    @JoinColumn(name="dest")
@@ -22,8 +22,9 @@ public class MI extends User {
         this.address = address;
     }
 
+    @Override
     public String getAccount(){
-        return account;
+        return super.getAccount();
     }
 
     public Integer getMiId() {
