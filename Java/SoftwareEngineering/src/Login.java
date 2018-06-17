@@ -31,7 +31,7 @@ public class Login extends JFrame{
 	private JButton title;
 	private Container con;
 	private JLabel idLabel,pwLabel;
-	
+	private BloodDB db;
 	public Login()
 	{
 		super("BLOOD_LINK");
@@ -117,6 +117,8 @@ public class Login extends JFrame{
 		LoginButton.addActionListener(h);
 		ExitButton.addActionListener(h);
 		password.addActionListener(h);
+		
+		db=new BloodDB();
 	}
 	
 	private class Handler implements ActionListener
@@ -162,6 +164,11 @@ public class Login extends JFrame{
 		{
 			
 		}
+	//	String result=db.getLogin(id, pw);
+	//	if(result.equals("true"))
+	//	return true;
+	//	else 
+	//	return false;
 		return false;
 	}
 	

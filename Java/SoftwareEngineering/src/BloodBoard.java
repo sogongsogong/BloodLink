@@ -10,6 +10,8 @@ import java.awt.event.KeyListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -44,7 +46,7 @@ public class BloodBoard extends JFrame{
 	private CertificationList CertList;//헌혈증목록
 	private JFrame frame;
 	private String id;
-	
+	private BloodDB db;
 	public BloodBoard(String id)
 	{
 		super("BLOOD_Board");
@@ -107,7 +109,7 @@ public class BloodBoard extends JFrame{
 		search.addActionListener(h);
 		delete.addActionListener(h);
 		approve.addActionListener(h);
-		
+		db=new BloodDB();
 		setVisible(true);
 	}
 	private class Handler implements ActionListener
@@ -130,10 +132,40 @@ public class BloodBoard extends JFrame{
 					TableSet(rowDataTemp);
 				}
 			}
-		//	else if(event.getSource())
-		//	{
+			else if(event.getSource()==delete)//삭제
+			{
+				if(table.getSelectedRow()!=-1)
+				{
+					
+					int[] selectedList=table.getSelectedRows();
+					deleteInfo(selectedList);
+					SearchInfo();
+					jscroll.setVisible(false);
+					TableSet(rowData);
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(null, "선택된 셀이 없습니다.");
+					return ;
+				}
 				
-		//	}
+			}
+			else if(event.getSource()==approve)//승인
+			{
+				if(table.getSelectedRow()!=-1)
+				{
+					int[] selectedList=table.getSelectedRows();
+					approveInfo(selectedList);
+					SearchInfo();
+					jscroll.setVisible(false);
+					TableSet(rowData);
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(null, "선택된 셀이 없습니다.");
+					return ;
+				}
+			}
 		}
 	}
 	public void SearchInfo()//rowdata불러오기 및 새로고침
@@ -165,6 +197,8 @@ public class BloodBoard extends JFrame{
 		{
 			
 		}
+	//	String result=db.getRowData(id);
+		
 	}
 	public void SearchInfo(String a,int index,int sindex)//rowdata불러오기 및 새로고침
 	{
@@ -220,9 +254,113 @@ public class BloodBoard extends JFrame{
 			
 		}
 	}
-	public void deleteInfo(String number)
+	public void approveInfo(int[] list)//승인
 	{
+		String message = "";
 		
+		int i=0;
+		int j=0;
+		
+		while(true)
+		{
+			
+			if(i!=list[j])
+			{
+				message+=rowData[i][0]+" "+rowData[i][1]+" "+rowData[i][2]+" "+rowData[i][3]+"\n";
+			}
+			else
+			{
+				if(rowData[i][3].equals("사용대기"))
+					rowData[i][3]="사용완료";
+				message+=rowData[i][0]+" "+rowData[i][1]+" "+rowData[i][2]+" "+rowData[i][3]+"\n";
+				if(j!=list.length-1)
+					j++;
+				
+			}
+			i++;
+			if(i==rowData.length)
+				break;
+		}
+        System.out.println(message);
+        File file = new File("table.txt");
+        FileWriter writer = null;
+        
+        try {
+            // 기존 파일의 내용에 이어서 쓰려면 true를, 기존 내용을 없애고 새로 쓰려면 false를 지정한다.
+            writer = new FileWriter(file, false);
+            writer.write(message);
+            writer.flush();
+            
+            System.out.println("DONE");
+        } 
+        catch(IOException e) 
+        {
+            e.printStackTrace();
+        } 
+        finally 
+        {
+            try {
+                if(writer != null) writer.close();
+            } 
+            catch(IOException e) 
+            {
+                e.printStackTrace();
+            }
+        }
+	}
+	public void deleteInfo(int[] list)//삭제
+	{
+		String message = "";
+		
+		int i=0;
+		int j=0;
+		
+		System.out.println(list[0]);
+		System.out.println(rowData.length);
+		while(true)
+		{
+			
+			if(i!=list[j])
+			{
+				message+=rowData[i][0]+" "+rowData[i][1]+" "+rowData[i][2]+" "+rowData[i][3]+'\n';	
+			}
+			else
+			{
+				if(j!=list.length-1)
+					j++;
+				
+			}
+			i++;
+			System.out.println("i="+i);
+			if(i==rowData.length)
+				break;
+		}
+        System.out.println(message);
+        File file = new File("table.txt");
+        FileWriter writer = null;
+        
+        try {
+            // 기존 파일의 내용에 이어서 쓰려면 true를, 기존 내용을 없애고 새로 쓰려면 false를 지정한다.
+            writer = new FileWriter(file, false);
+            writer.write(message);
+            writer.flush();
+            
+            System.out.println("DONE");
+        } 
+        catch(IOException e) 
+        {
+            e.printStackTrace();
+        } 
+        finally 
+        {
+            try {
+                if(writer != null) writer.close();
+            } 
+            catch(IOException e) 
+            {
+                e.printStackTrace();
+            }
+        }
 	}
 	public void ButtonSet()//button들 생성
 	{
