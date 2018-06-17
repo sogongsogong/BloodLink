@@ -1,9 +1,8 @@
 package sogongsogong.bloodlink.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 public class MI extends User {
@@ -12,10 +11,19 @@ public class MI extends User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer miId;
     private String address;
+    private String account;
+
+   @OneToMany
+   @JoinColumn(name="dest")
+   List<BDC> bdc;
 
     public MI(String account, String password, String name, String phone, String address) {
         super(account, password, name, phone);
         this.address = address;
+    }
+
+    public String getAccount(){
+        return account;
     }
 
     public Integer getMiId() {

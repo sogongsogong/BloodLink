@@ -1,10 +1,8 @@
 package sogongsogong.bloodlink.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Calendar;
+import java.util.Collection;
 
 @Entity
 public class Donor extends User {
@@ -17,6 +15,12 @@ public class Donor extends User {
     private String rh;
     private String abo;
     private int point;
+    private String account;
+
+    @OneToMany
+    @JoinColumn(name="owner")
+    private Collection<BDC> bdc;
+
 
     public Donor(String account, String password, String name, String phone, Calendar birth, boolean sex, String rh, String abo) {
         super(account, password, name, phone);
@@ -27,10 +31,13 @@ public class Donor extends User {
         this.point = 0;
     }
 
+    public String getAccount(){
+        return super.getAccount();
+    }
+
     public Integer getDonorId() {
         return donorId;
     }
-
     public void setDonorId(Integer donorId) {
         this.donorId = donorId;
     }
