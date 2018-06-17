@@ -3,8 +3,12 @@ package sogongsogong.bloodlink.repository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import sogongsogong.bloodlink.model.MI;
 
-@RepositoryRestResource(collectionResourceRel = "mi", path = "mi")
-public interface MIRepository extends UserRepository {
+import javax.transaction.Transactional;
 
-    MI findByAccount(String account);
+@Transactional
+@RepositoryRestResource(collectionResourceRel = "mi", path = "mi")
+public interface MIRepository extends UserRepository<MI> {
+    //MI findByAccount(String account);
 }
+
+/*MI USER BDC MI*/

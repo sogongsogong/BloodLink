@@ -1,9 +1,6 @@
 package sogongsogong.bloodlink.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Calendar;
 
 @Entity
@@ -12,7 +9,6 @@ public class BDC {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer bdcId;
-
     private String number;
     private String type;
     private String name;
@@ -20,8 +16,15 @@ public class BDC {
     private boolean sex;
     private Calendar date;
     private String place;
+
+    @ManyToOne(optional=false, targetEntity=Donor.class)
+    @JoinColumn(name="owner")
     private String owner;
-    private String usage;
+
+    @ManyToOne(optional=false, targetEntity=MI.class)
+    @JoinColumn(name="dest")
+    private String dest;
+
     private boolean valid;
 
     public BDC(String number, String type, String name, Calendar birth, boolean sex, Calendar date, String place, String owner) {
@@ -33,7 +36,7 @@ public class BDC {
         this.date = date;
         this.place = place;
         this.owner = owner;
-        this.usage = "";
+        //this.dest = "";
         this.valid = false;
     }
 
@@ -109,12 +112,12 @@ public class BDC {
         this.owner = owner;
     }
 
-    public String getUsage() {
-        return usage;
+    public String getDest() {
+        return dest;
     }
 
-    public void setUsage(String usage) {
-        this.usage = usage;
+    public void setDest(String dest) {
+        this.dest = dest;
     }
 
     public boolean isValid() {
@@ -125,19 +128,4 @@ public class BDC {
         this.valid = valid;
     }
 
-    @Override
-    public String toString() {
-        return "BDC{" +
-                ", number='" + number + '\'' +
-                ", type='" + type + '\'' +
-                ", name='" + name + '\'' +
-                ", birth=" + birth +
-                ", sex=" + sex +
-                ", date=" + date +
-                ", place='" + place + '\'' +
-                ", owner='" + owner + '\'' +
-                ", usage='" + usage + '\'' +
-                ", valid=" + valid +
-                '}';
-    }
 }

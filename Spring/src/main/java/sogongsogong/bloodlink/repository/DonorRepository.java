@@ -3,8 +3,11 @@ package sogongsogong.bloodlink.repository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import sogongsogong.bloodlink.model.Donor;
 
-@RepositoryRestResource(collectionResourceRel = "donor", path = "donor")
-public interface DonorRepository extends UserRepository {
+import javax.transaction.Transactional;
 
-    Donor findByAccount(String account);
+@Transactional
+@RepositoryRestResource(collectionResourceRel = "donor", path = "donor")
+public interface DonorRepository extends UserRepository<Donor> {
+
+   // Donor findByAccount(String account);
 }
