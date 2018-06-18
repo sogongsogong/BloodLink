@@ -1,63 +1,119 @@
 package sogongsogong.bloodlink.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import sogongsogong.bloodlink.model.BDC;
 import sogongsogong.bloodlink.model.Donor;
 import sogongsogong.bloodlink.repository.DonorRepository;
 
-import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
-@RequestMapping(path="/donor")
-public class DonorController extends UserController{
+@RequestMapping("/donor")
+//public class DonorController extends UserController {
+public class DonorController {
 
     @Autowired
     private DonorRepository donorRepository;
 
-    @RequestMapping(path = "/register")
-    public boolean register(@RequestParam String account, @RequestParam String password, @RequestParam String confirm, @RequestParam String name, @RequestParam String phone, @RequestParam Calendar birth, @RequestParam boolean sex, @RequestParam String rh, @RequestParam String abo) {
-        return register(new Donor(account, password, name, phone, birth, sex, rh, abo), confirm);
+    @RequestMapping(value = "/register")
+    public boolean register(@RequestParam String account, @RequestParam String password, @RequestParam String name, @RequestParam String phone, @RequestParam String birth, @RequestParam boolean sex, @RequestParam String rh, @RequestParam String abo) {
+        return register(new Donor(account, password, name, phone, birth, sex, rh, abo));
     }
 
-    public boolean register(Donor donor, String password) {
-        boolean success = false;
-        if(!donorRepository.existsByAccount(donor.getAccount())) {
-            if(donor.getPassword().equals(password)) {
-                donorRepository.save(donor);
-                success = true;
-            }
+    //@RequestMapping(value = "/register")
+    public boolean register(@RequestBody Donor donor) {
+        boolean response = false;
+        if(!check(donor.getAccount())) {
+            donorRepository.save(donor);
+            response = true;
         }
-        return success;
+        return response;
     }
 
-    @RequestMapping(method = GET, path = "/check")
-    public boolean isExist(@RequestParam String account) {
+    @RequestMapping(value = "/check", method = GET)
+    public boolean check(@RequestParam String account) {
         return donorRepository.existsByAccount(account);
     }
 
-    @RequestMapping(path = "/login")
+    @RequestMapping(value = "/login")
     public boolean login(@RequestParam String account, @RequestParam String password) {
-        Donor donor = donorRepository.findByAccount(account);
-        return login(donor, password);
-    }
-
-    @RequestMapping(method = GET, path = "/search")
-    public String search(@RequestParam String account) {
-        String result="";
-        if(donorRepository.existsByAccount(account)) {
-            Donor donor = donorRepository.findByAccount(account);
-            result += donor.toString();
+        boolean response = false;
+        Donor donor = info(account);
+        if(donor != null) {
+            response = donor.getPassword().equals(password);
         }
-        return result;
+        return response;
     }
 
-    @RequestMapping(method = PUT, path = "/update/info")
-    public String update(@RequestParam String account, @RequestParam String password, @RequestParam String phone, @RequestParam String name, @RequestParam Calendar birth, @RequestParam boolean sex, @RequestParam String rh, @RequestParam String abo) {
+    @RequestMapping(value = "/search", method = GET)
+    public String search(@RequestParam(required = false) String key, @RequestParam(required = false) String value) {
+        List<Donor> list = null;
+        if(key == null || value == null) {
+            list = new ArrayList<>();
+            Iterable<Donor> donors = donorRepository.findAll();
+            donors.forEach(list::add);
+        } else {
+            if(key.equals("account")) {
+                list = new ArrayList<>();
+                list.add(donorRepository.findByAccount(value));
+            } else if(key.equals("name")) {
+                list = donorRepository.findByName(value);
+            } else if(key.equals("phone")) {
+                list = donorRepository.findByPhone(value);
+            }
+        }
+        StringBuffer buffer = new StringBuffer();
+        if(list != null) {
+            Iterator iterator = list.iterator();
+            while(iterator.hasNext()) {
+                buffer.append(iterator.next().toString());
+            }
+        }
+        return buffer.toString();
+        //return conceal(list);
+    }
+
+    @RequestMapping(value = "/{account}", method = GET)
+    public Donor info(@PathVariable String account) {
+        return donorRepository.findByAccount(account);
+    }
+
+/*
+    @RequestMapping(value = "/{account}/bdcs")
+    public List<BDC> read(@PathVariable String account) {
+        Donor donor = info(account);
+        Iterator<BDC> iterator = donor.getBdc().iterator();
+        List<BDC> list = new ArrayList<>();
+        while(iterator.hasNext()) {
+            list.add(iterator.next());
+        }
+        return list;
+    }
+*/
+
+    /*@RequestMapping(value = "/{account}/point")
+    public boolean update(@PathVariable String account, @RequestParam int point) {
+        boolean response = false;
+        Donor donor = info(account);
+        if(donor != null) {
+            point += donor.getPoint();
+            donor.setPoint(point);
+            donorRepository.save(donor);
+            response = true;
+        }
+        return response;
+    }*/
+
+
+
+    /*
+    @RequestMapping(value = "/update/{account}", method = PUT)
+    public void update(@PathVariable String account, @RequestParam String password, @RequestParam String phone, @RequestParam String name, @RequestParam String birth, @RequestParam boolean sex, @RequestParam String rh, @RequestParam String abo) {
         Donor donor = donorRepository.findByAccount(account);
         donor.setPassword(password);
         donor.setPhone(phone);
@@ -66,16 +122,19 @@ public class DonorController extends UserController{
         donor.setSex(sex);
         donor.setRh(rh);
         donor.setAbo(abo);
-        donorRepository.save(donor);
-        return "Donor '" + account + "' updated!";
+        update(donor);
     }
 
-    @RequestMapping(method = PUT, path = "/update/point")
-    public String update(@RequestParam String account, @RequestParam int point) {
-        Donor donor = donorRepository.findByAccount(account);
-        point += donor.getPoint();
-        donor.setPoint(point);
+    @RequestMapping(value = "/update/{account}", method = PUT)
+    public void update(@RequestBody User donor) {
         donorRepository.save(donor);
-        return "Donor '" + account + "' has "+ point + " points";
     }
+
+    @RequestMapping(value = "/update/{account}", method = PUT)
+    public void update(@RequestParam String password) {
+        Donor donor = donorRepository.findByAccount();
+        donor.setPassword(password);
+        donorRepository.save(donor);
+    }
+    */
 }

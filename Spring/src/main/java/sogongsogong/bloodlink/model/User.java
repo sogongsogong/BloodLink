@@ -1,7 +1,11 @@
 package sogongsogong.bloodlink.model;
 
-public class User {
+import javax.persistence.Inheritance;
+import javax.validation.constraints.NotNull;
 
+@Inheritance
+public class User {
+    @NotNull
     private String account;
     private String password;
     private String name;
