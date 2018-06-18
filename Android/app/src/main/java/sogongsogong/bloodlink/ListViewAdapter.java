@@ -1,4 +1,4 @@
-package com.example.yeongrae.myapplication;
+package sogongsogong.bloodlink;
 
 import android.content.Context;
 import android.view.LayoutInflater;

@@ -14,7 +14,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Scanner;
 import java.util.TreeSet;
 
@@ -31,21 +37,21 @@ public class Login extends JFrame{
 	private JButton title;
 	private Container con;
 	private JLabel idLabel,pwLabel;
-	
+	private BloodDB db;
 	public Login()
 	{
 		super("BLOOD_LINK");
 		setContentPane(new JLabel(new ImageIcon("icon\\heart.jpg")));
-		setLocation(730, 300);//ÇÁ·¹ÀÓÀ§Ä¡ ¼³Á¤
-		setSize(550,400);// ÇÁ·¹ÀÓÅ©±â ¼³Á¤
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//close¹Ú½º
-		setLayout(null);//·¹ÀÌ¾Æ¿ô ³Î°ª
+		setLocation(730, 300);//í”„ë ˆì„ìœ„ì¹˜ ì„¤ì •
+		setSize(550,400);// í”„ë ˆì„í¬ê¸° ì„¤ì •
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//closeë°•ìŠ¤
+		setLayout(null);//ë ˆì´ì•„ì›ƒ ë„ê°’
 		
 		Toolkit tk=Toolkit.getDefaultToolkit();
 		Image img= tk.getImage("icon\\frameicon.png");
 		setIconImage(img);
 		
-		title=new JButton(new ImageIcon("icon\\BloodLink·Î°í.png"));
+		title=new JButton(new ImageIcon("icon\\BloodLinkë¡œê³ .png"));
 		title.setBounds(68, 20, 415, 120);
 		add(title);
 	    buttonHide(title);
@@ -111,12 +117,14 @@ public class Login extends JFrame{
 		
 		pan.add(LoginButton);
 		pan.add(ExitButton);
-		setVisible(true);//º¸ÀÌ°Ô
+		setVisible(true);//ë³´ì´ê²Œ
 		
 		Handler h=new Handler();
 		LoginButton.addActionListener(h);
 		ExitButton.addActionListener(h);
 		password.addActionListener(h);
+		
+		db=new BloodDB();
 	}
 	
 	private class Handler implements ActionListener
@@ -133,7 +141,7 @@ public class Login extends JFrame{
 				}
 				else
 				{
-					JOptionPane.showMessageDialog(null, "¾ÆÀÌµğ°¡ ¾ø°Å³ª ºñ¹Ğ¹øÈ£°¡ Æ²·È½À´Ï´Ù");
+					JOptionPane.showMessageDialog(null, "ì•„ì´ë””ê°€ ì—†ê±°ë‚˜ ë¹„ë°€ë²ˆí˜¸ê°€ í‹€ë ¸ìŠµë‹ˆë‹¤");
 					return ;
 				}
 			}
@@ -144,9 +152,37 @@ public class Login extends JFrame{
 		}
 	}
 	
-	public boolean findMember(String id,String pw)//id¿Í ÆĞ½º¿öµå È®ÀÎ
+	public boolean findMember(String id,String pw)//idì™€ íŒ¨ìŠ¤ì›Œë“œ í™•ì¸
 	{
-		String member=new String(id+" "+pw);//id¿Í ÆĞ½º¿öµåÇÕÄ§
+		boolean isLogin = false;
+		try {
+			String address = "http://localhost:8080/mi/login";
+			URL url = new URL(address+"?account="+id+"&password="+pw);
+			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+			BufferedReader reader = null;
+			int code = connection.getResponseCode();
+			if(code == 200) {
+				reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			} else {
+				//ì—°ê²°ì•ˆë¨
+				//reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+			}
+			StringBuffer buffer = new StringBuffer();
+			String string;
+			while((string = reader.readLine()) != null) {
+				buffer.append(string);
+			}
+			reader.close();
+			connection.disconnect();
+			if(buffer.toString().equals("true")) {
+				isLogin = true;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return isLogin;
+
+		/*String member=new String(id+" "+pw);//idì™€ íŒ¨ìŠ¤ì›Œë“œí•©ì¹¨
 		System.out.println(member);
 
 		try
@@ -162,10 +198,15 @@ public class Login extends JFrame{
 		{
 			
 		}
-		return false;
+	//	String result=db.getLogin(id, pw);
+	//	if(result.equals("true"))
+	//	return true;
+	//	else 
+	//	return false;
+		return false;*/
 	}
 	
-	public void buttonHide(JButton button)//buttonÃ³¸®
+	public void buttonHide(JButton button)//buttonì²˜ë¦¬
 	{
 		button.setBackground(new Color(255,255,255));
 		button.setOpaque(false);

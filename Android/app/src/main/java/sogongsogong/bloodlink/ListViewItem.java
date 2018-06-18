@@ -1,4 +1,4 @@
-package com.example.yeongrae.myapplication;
+package sogongsogong.bloodlink;
 
 public class ListViewItem {
 

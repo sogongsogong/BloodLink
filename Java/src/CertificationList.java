@@ -1,26 +1,26 @@
 import java.util.ArrayList;
 
 public class CertificationList {
-	//ÇåÇ÷Áõ¸®½ºÆ®
+	//í—Œí˜ˆì¦ë¦¬ìŠ¤íŠ¸
 	private ArrayList<Certification> CertList;
 	
 	public CertificationList()
 	{
 	}
 	
-	public void CertAdd(Certification cert)//ÇåÇ÷ÁõÃß°¡
+	public void CertAdd(Certification cert)//í—Œí˜ˆì¦ì¶”ê°€
 	{
 		CertList.add(cert);
 	}
 	
-	public ArrayList<Certification> getCertList()//ÇåÇ÷Áõ¸®½ºÆ® °¡Á®¿À±â
+	public ArrayList<Certification> getCertList()//í—Œí˜ˆì¦ë¦¬ìŠ¤íŠ¸ ê°€ì ¸ì˜¤ê¸°
 	{
 		return CertList;
 	}
 	
-	public Certification searchCert()//ÇåÇ÷Áõ Á¶È¸
+	public Certification searchCert()//í—Œí˜ˆì¦ ì¡°íšŒ
 	{
-		Certification result=new Certification();//¹İÈ¯ÇÒ ÇåÇ÷Áõ
+		Certification result=new Certification();//ë°˜í™˜í•  í—Œí˜ˆì¦
 		
 		return result;
 	}

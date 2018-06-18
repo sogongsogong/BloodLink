@@ -10,6 +10,8 @@ import java.awt.event.KeyListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -32,46 +34,46 @@ import javax.swing.table.TableColumnModel;
 
 public class BloodBoard extends JFrame{
 	
-	private JTable table;//������ ���̺�
-	private JScrollPane jscroll;//������ ���̺��� ���� scroll
+	private JTable table;//데이터 테이블
+	private JScrollPane jscroll;//데이터 테이블이 들어가는 scroll
 	private DefaultTableModel mod;
-	private JLabel title;//Ÿ��Ʋ "��������������"
-	private JComboBox<String> comboStandard, comboStatus;//��ȸ������ ����ִ� �޺��ڽ�,��û���°� ����ִ� �޺��ڽ�
-	private JTextField searchText;//�˻� �ؽ�Ʈ �ʵ�
-	private JButton search,delete,approve;//����� ��ư��
-	private String columnNames[]={ "������ȣ", "������̸�", "������̸���","��û����" };
-	private String rowData[][],rowDataTemp[][];//���̺� �� �����͵�
-	private CertificationList CertList;//���������
+	private JLabel title;//타이틀 "헌혈증서사용상태"
+	private JComboBox<String> comboStandard, comboStatus;//조회기준이 들어있는 콤보박스,신청상태가 들어있는 콤보박스
+	private JTextField searchText;//검색 텍스트 필드
+	private JButton search,delete,approve;//사용할 버튼들
+	private String columnNames[]={ "증서번호", "사용자이름", "사용자이메일","신청상태" };
+	private String rowData[][],rowDataTemp[][];//테이블에 들어갈 데이터들
+	private CertificationList CertList;//헌혈증목록
 	private JFrame frame;
 	private String id;
-	
+	private BloodDB db;
 	public BloodBoard(String id)
 	{
 		super("BLOOD_Board");
-		setLocation(360, 225);//��������ġ ����
-		setSize(1200,730);// ������ũ�� ����
+		setLocation(360, 225);//프레임위치 설정
+		setSize(1200,730);// 프레임크기 설정
 		setContentPane(new JLabel(new ImageIcon("icon\\pulse1.jpg")));
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//close�ڽ�
-		setLayout(null);//���̾ƿ� �ΰ�
-
-		this.id=id;
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//close박스
+		setLayout(null);//레이아웃 널값
+		
+		this.id=id;//ID받아오기
 		
 		Toolkit tk=Toolkit.getDefaultToolkit();
 		Image img= tk.getImage("icon\\frameicon.png");
 		setIconImage(img);
 		
-		title = new JLabel("�������� ����û ����");//title�ֱ�
+		title = new JLabel("헌혈증서 사용신청 상태");//title넣기
 		title.setBounds(85, 50, 280, 40);
 		title.setFont(new Font("", 1, 25));
 		add(title);
 		
-		SearchInfo();//���̺� ���� ��ȸ
+		SearchInfo();//테이블 내용 조회
 		
-        TableSet(rowData);//���̺� ���� �� ����
+        TableSet(rowData);//테이블 생성 및 설정
      
-		ComboBoxSet();//�޺��ڽ�����
+		ComboBoxSet();//콤보박스생성
 		
-		searchText = new JTextField();//search�ؽ�Ʈ��Ʈ
+		searchText = new JTextField();//search텍스트필트
 		searchText.setBounds(645,50,200,40);
 		searchText.setBackground(Color.WHITE);
 		searchText.setFont(new Font("", 1, 15));
@@ -95,7 +97,7 @@ public class BloodBoard extends JFrame{
 			public void keyPressed(KeyEvent e) {
 				if(e.getKeyCode() == KeyEvent.VK_ENTER)
 				{
-					search.doClick();//�˻� ĭ���� ENTER Ű �Է½� "search"��ư Ŭ��
+					search.doClick();//검색 칸에서 ENTER 키 입력시 "search"버튼 클릭
 				}
 				
 			}
@@ -103,11 +105,11 @@ public class BloodBoard extends JFrame{
 		searchText.addKeyListener(k);
 		Handler h = new Handler();
 		
-		ButtonSet();//��ư����
+		ButtonSet();//버튼생성
 		search.addActionListener(h);
 		delete.addActionListener(h);
 		approve.addActionListener(h);
-		
+		db=new BloodDB();
 		setVisible(true);
 	}
 	private class Handler implements ActionListener
@@ -117,26 +119,56 @@ public class BloodBoard extends JFrame{
 		{
 			if(event.getSource()==search)
 			{
-				if(searchText.getText().equals(""))//���ΰ�ħ
+				if(searchText.getText().equals(""))//새로고침
 				{
 					SearchInfo();
 					jscroll.setVisible(false);
 					TableSet(rowData);
 				}
-				else//�˻�
+				else//검색
 				{
 					SearchInfo(searchText.getText(),comboStandard.getSelectedIndex(),comboStatus.getSelectedIndex());
 					jscroll.setVisible(false);
 					TableSet(rowDataTemp);
 				}
 			}
-		//	else if(event.getSource())
-		//	{
+			else if(event.getSource()==delete)//삭제
+			{
+				if(table.getSelectedRow()!=-1)
+				{
+					
+					int[] selectedList=table.getSelectedRows();
+					deleteInfo(selectedList);
+					SearchInfo();
+					jscroll.setVisible(false);
+					TableSet(rowData);
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(null, "선택된 셀이 없습니다.");
+					return ;
+				}
 				
-		//	}
+			}
+			else if(event.getSource()==approve)//승인
+			{
+				if(table.getSelectedRow()!=-1)
+				{
+					int[] selectedList=table.getSelectedRows();
+					approveInfo(selectedList);
+					SearchInfo();
+					jscroll.setVisible(false);
+					TableSet(rowData);
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(null, "선택된 셀이 없습니다.");
+					return ;
+				}
+			}
 		}
 	}
-	public void SearchInfo()//rowdata�ҷ����� �� ���ΰ�ħ
+	public void SearchInfo()//rowdata불러오기 및 새로고침
 	{
 		try
 		{
@@ -165,8 +197,10 @@ public class BloodBoard extends JFrame{
 		{
 			
 		}
+	//	String result=db.getRowData(id);
+		
 	}
-	public void SearchInfo(String a,int index,int sindex)//rowdata�ҷ����� �� ���ΰ�ħ
+	public void SearchInfo(String a,int index,int sindex)//rowdata불러오기 및 새로고침
 	{
 		try
 		{
@@ -178,9 +212,9 @@ public class BloodBoard extends JFrame{
 			int count=0;
 			String status="";
 			if(sindex==1)
-				status="�����";
+				status="사용대기";
 			else if(sindex==2)
-				status="���Ϸ�";
+				status="사용완료";
 			
 			while ((row = bf.readLine()) != null) 
 			{	
@@ -220,37 +254,141 @@ public class BloodBoard extends JFrame{
 			
 		}
 	}
-	public void deleteInfo(String number)
+	public void approveInfo(int[] list)//승인
 	{
+		String message = "";
 		
+		int i=0;
+		int j=0;
+		
+		while(true)
+		{
+			
+			if(i!=list[j])
+			{
+				message+=rowData[i][0]+" "+rowData[i][1]+" "+rowData[i][2]+" "+rowData[i][3]+"\n";
+			}
+			else
+			{
+				if(rowData[i][3].equals("사용대기"))
+					rowData[i][3]="사용완료";
+				message+=rowData[i][0]+" "+rowData[i][1]+" "+rowData[i][2]+" "+rowData[i][3]+"\n";
+				if(j!=list.length-1)
+					j++;
+				
+			}
+			i++;
+			if(i==rowData.length)
+				break;
+		}
+        System.out.println(message);
+        File file = new File("table.txt");
+        FileWriter writer = null;
+        
+        try {
+            // 기존 파일의 내용에 이어서 쓰려면 true를, 기존 내용을 없애고 새로 쓰려면 false를 지정한다.
+            writer = new FileWriter(file, false);
+            writer.write(message);
+            writer.flush();
+            
+            System.out.println("DONE");
+        } 
+        catch(IOException e) 
+        {
+            e.printStackTrace();
+        } 
+        finally 
+        {
+            try {
+                if(writer != null) writer.close();
+            } 
+            catch(IOException e) 
+            {
+                e.printStackTrace();
+            }
+        }
 	}
-	public void ButtonSet()//button�� ����
+	public void deleteInfo(int[] list)//삭제
 	{
-		search = new JButton("��ȸ");//search��ư
+		String message = "";
+		
+		int i=0;
+		int j=0;
+		
+		System.out.println(list[0]);
+		System.out.println(rowData.length);
+		while(true)
+		{
+			
+			if(i!=list[j])
+			{
+				message+=rowData[i][0]+" "+rowData[i][1]+" "+rowData[i][2]+" "+rowData[i][3]+'\n';	
+			}
+			else
+			{
+				if(j!=list.length-1)
+					j++;
+				
+			}
+			i++;
+			System.out.println("i="+i);
+			if(i==rowData.length)
+				break;
+		}
+        System.out.println(message);
+        File file = new File("table.txt");
+        FileWriter writer = null;
+        
+        try {
+            // 기존 파일의 내용에 이어서 쓰려면 true를, 기존 내용을 없애고 새로 쓰려면 false를 지정한다.
+            writer = new FileWriter(file, false);
+            writer.write(message);
+            writer.flush();
+            
+            System.out.println("DONE");
+        } 
+        catch(IOException e) 
+        {
+            e.printStackTrace();
+        } 
+        finally 
+        {
+            try {
+                if(writer != null) writer.close();
+            } 
+            catch(IOException e) 
+            {
+                e.printStackTrace();
+            }
+        }
+	}
+	public void ButtonSet()//button들 생성
+	{
+		search = new JButton("조회");//search버튼
 		search.setBounds(855,50,80,40);
 		search.setFont(new Font("", 1, 15));
 		
-		delete = new JButton("����");//delete ��ư
+		delete = new JButton("삭제");//delete 버튼
 		delete.setBounds(945,50,80,40);
 		delete.setFont(new Font("", 1, 15));
 
-		approve = new JButton("����");//approve ��ư
+		approve = new JButton("승인");//approve 버튼
 		approve.setBounds(1035,50,80,40);
 		approve.setFont(new Font("", 1, 15));
 		add(delete);
 		add(search);
 		add(approve);
 	}
-	public void ComboBoxSet()//combobox����
+	public void ComboBoxSet()//combobox생성
 	{
-		String status[] = {"��û����(��ü)","�����","���Ϸ�"};
-		comboStatus= new JComboBox<String>(status);//������ �޺��ڽ�����
+		String status[] = {"신청상태(전체)","사용대기","사용완료"};
+		comboStatus= new JComboBox<String>(status);//사용상태 콤보박스생성
 		comboStatus.setBounds(385,50,130,40);
 		comboStatus.setBackground(Color.WHITE);
 		comboStatus.setFont(new Font("", 1, 15));
 		
-		String standard[]= {"������ȣ", "������̸�", "������̸���" };
-		comboStandard = new JComboBox<String>(standard);//comboStandardbox����
+		String standard[]= {"증서번호", "사용자이름", "사용자이메일" };
+		comboStandard = new JComboBox<String>(standard);//comboStandardbox생성
 		comboStandard.setBounds(525, 50, 110, 40);
 		comboStandard.setBackground(Color.WHITE);
 		comboStandard.setFont(new Font("", 1, 15));
@@ -261,45 +399,45 @@ public class BloodBoard extends JFrame{
 	public void TableSet(String Data[][])
 	{
 		mod= new DefaultTableModel(Data,columnNames) {
-			public boolean isCellEditable(int row,int column)//table ���Ƿ� �����Ұ�
+			public boolean isCellEditable(int row,int column)//table 임의로 수정불가
 			{
 				return false;
 			}
 		};
-		table = new JTable(mod);//table����
-		table.setSelectionMode(2);//���� ���ð���
-		TableWidth();//table ���� ����
-        table.setFont(new Font("", 1, 15));//table font ũ������
+		table = new JTable(mod);//table생성
+		table.setSelectionMode(2);//다중 선택가능
+		TableWidth();//table 간격 조절
+        table.setFont(new Font("", 1, 15));//table font 크기조절
         table.setRowHeight(40);
-        TableFontSort();//�۾� ��� ����
-        
-        jscroll = new JScrollPane(table);//scroll ����
-		jscroll.setBounds(85, 120, 1030, 500);//ũ�⼳��
-		jscroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);//�������⽺ũ��
+        TableFontSort();//글씨 가운데 정렬
+   
+        jscroll = new JScrollPane(table);//scroll 생성
+		jscroll.setBounds(85, 120, 1030, 500);//크기설정
+		jscroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);//수직방향스크롤
 		add(jscroll);
 		return ;
 	}
-	public void TableWidth()//���̺� �� ��������
+	public void TableWidth()//테이블 열 간격조절
 	{
-		table.getColumn("������ȣ").setPreferredWidth(5);
-		table.getColumn("������̸�").setPreferredWidth(20);
-		table.getColumn("������̸���").setPreferredWidth(110);
-		table.getColumn("��û����").setPreferredWidth(10);
+		table.getColumn("증서번호").setPreferredWidth(5);
+		table.getColumn("사용자이름").setPreferredWidth(20);
+		table.getColumn("사용자이메일").setPreferredWidth(110);
+		table.getColumn("신청상태").setPreferredWidth(10);
 	}
-	public void TableFontSort()//table �۾� ����
+	public void TableFontSort()//table 글씨 정렬
 	{
-		// DefaultTableCellHeaderRenderer ���� (��� ������ ����)
+		// DefaultTableCellHeaderRenderer 생성 (가운데 정렬을 위한)
 		DefaultTableCellRenderer tScheduleCellRenderer = new DefaultTableCellRenderer();
 
 				 
-		// DefaultTableCellHeaderRenderer�� ������ ��� ���ķ� ����
+		// DefaultTableCellHeaderRenderer의 정렬을 가운데 정렬로 지정
 		tScheduleCellRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 				
-		// ������ ���̺��� ColumnModel�� ������
+		// 정렬할 테이블의 ColumnModel을 가져옴
 		TableColumnModel tcmSchedule = table.getColumnModel();
 
 				 
-		// �ݺ����� �̿��Ͽ� ���̺��� ��� ���ķ� ����
+		// 반복문을 이용하여 테이블을 가운데 정렬로 지정
 		for (int i = 0; i < tcmSchedule.getColumnCount(); i++) {
 		tcmSchedule.getColumn(i).setCellRenderer(tScheduleCellRenderer);
 		}

@@ -1,7 +1,7 @@
 
 public class Certification {
-	//ÇåÇæÁõ°´Ã¼
-	private String name,email,date,state,certnum;//ÇåÇ÷ÁõÁ¤º¸
+	//헌헐증객체
+	private String name,email,date,state,certnum;//헌혈증정보
 	
 	public Certification()
 	{
