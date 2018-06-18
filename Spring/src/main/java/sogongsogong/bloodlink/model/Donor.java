@@ -16,6 +16,11 @@ public class Donor extends User {
     private String abo;
     private int point;
 
+    private String account;
+    private String passwd;
+    private String name;
+    private String phone;
+
 
     @OneToMany
     @JoinColumn(name="owner")
