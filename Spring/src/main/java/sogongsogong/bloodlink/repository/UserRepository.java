@@ -1,4 +1,4 @@
-package sogongsogong.bloodlink.repository;
+/*package sogongsogong.bloodlink.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.NoRepositoryBean;
@@ -10,10 +10,11 @@ import java.util.List;
 public interface UserRepository<T extends User> extends CrudRepository<T, Integer>{
 
     boolean existsByAccount(String account);
-    /*T findByAccount(String account);
-    T findByName(String name);
-    T findByPhone(String phone);*/
+    //T findByAccount(String account);
+    //T findByName(String name);
+    //T findByPhone(String phone);
     List<T> findByAccount(String account);
     List<T> findByName(String name);
     List<T> findByPhone(String phone);
 }
+*/

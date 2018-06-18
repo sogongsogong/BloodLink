@@ -1,10 +1,7 @@
 package sogongsogong.bloodlink.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import sogongsogong.bloodlink.model.BDC;
 import sogongsogong.bloodlink.model.Donor;
 import sogongsogong.bloodlink.model.MI;
@@ -20,29 +17,29 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 @RequestMapping("/mi")
-public class MIController extends UserController{
+//public class MIController extends UserController{
+public class MIController {
 
     @Autowired
     private MIRepository miRepository;
-    @Autowired
+    /*@Autowired
     private DonorRepository donorRepository;
     @Autowired
-    private BDCRepository bdcRepository;
+    private BDCRepository bdcRepository;*/
 
-    @RequestMapping(value = "/register", method = POST)
+    @RequestMapping(value = "/register")
     public boolean register(@RequestParam String account, @RequestParam String password, @RequestParam String name, @RequestParam String phone, @RequestParam String address) {
         return register(new MI(account, password, name, phone, address));
     }
 
-    //@RequestMapping(value = "/register", method = POST)
-    //public boolean register(@RequestBody Mi mi) {
-    public boolean register(MI mi) {
-        boolean result = false;
+    //@RequestMapping(value = "/register")
+    public boolean register(@RequestBody MI mi) {
+        boolean response = false;
         if(!check(mi.getAccount())) {
             miRepository.save(mi);
-            result = true;
+            response = true;
         }
-        return result;
+        return response;
     }
 
     @RequestMapping(value = "/check", method = GET)
@@ -53,9 +50,9 @@ public class MIController extends UserController{
     @RequestMapping(value = "/login")
     public boolean login(@RequestParam String account, @RequestParam String password) {
         boolean response = false;
-        List<MI> mi = miRepository.findByAccount(account);
-        if(mi.size()==1) {
-            response = login(mi.get(0), password);
+        MI mi = info(account);
+        if(mi != null) {
+            response = mi.getPassword().equals(password);
         }
         return response;
     }
@@ -69,21 +66,44 @@ public class MIController extends UserController{
             mis.forEach(list::add);
         } else {
             if(key.equals("account")) {
-                list = miRepository.findByAccount(value);
+                list = new ArrayList<>();
+                list.add(miRepository.findByAccount(value));
             } else if(key.equals("name")) {
                 list = miRepository.findByName(value);
             } else if(key.equals("phone")) {
                 list = miRepository.findByPhone(value);
             }
         }
-        return conceal(list);
+        StringBuffer buffer = new StringBuffer();
+        if(list != null) {
+            Iterator iterator = list.iterator();
+            while(iterator.hasNext()) {
+                buffer.append(iterator.next().toString());
+            }
+        }
+        return buffer.toString();
+        //return conceal(list);
     }
 
     @RequestMapping(value = "/{account}", method = GET)
     public MI info(@PathVariable String account) {
-        return miRepository.findByAccount(account).get(0);
+        return miRepository.findByAccount(account);
     }
 
+    /*
+    @RequestMapping(value = "/{account}/read", method = GET)
+    public List<BDC> read(@PathVariable String account) {
+        MI mi = info(account);
+        Iterator<BDC> iterator = mi.getBdc().iterator();
+        List<BDC> list = new ArrayList<>();
+        while(iterator.hasNext()) {
+            list.add(iterator.next());
+        }
+        return list;
+    }
+    */
+
+    /*
     @RequestMapping(value = "/{account}/queue", method = GET) //all, wait, used
     public String queue(@PathVariable String account, @RequestParam(required = false) String stat, @RequestParam(required = false) String key, @RequestParam(required = false) String value) {
         List<BDC> bdcs = bdcRepository.findByDest(account);
@@ -92,7 +112,7 @@ public class MIController extends UserController{
         while(iterator.hasNext()) {
             String string;
             BDC bdc = iterator.next();
-            Donor donor = (Donor)donorRepository.findByAccount(bdc.getOwner()).get(0);
+            Donor donor = (Donor)donorRepository.findByAccount(bdc.getOwner());
             boolean match = false;
             if(stat == null || stat.equals("all")) {
                 if(key==null && value==null) {
@@ -138,7 +158,9 @@ public class MIController extends UserController{
         }
         return match;
     }
+    */
 
+/*
     @RequestMapping(value = "/{account}/{use}", method = PUT)
     public boolean use(@PathVariable String account, @PathVariable String use, @RequestParam String number) {
         boolean response = false;
@@ -156,7 +178,29 @@ public class MIController extends UserController{
         }
         return response;
     }
-
+    */
+/*
+    @RequestMapping(value = "/{account}/{use}")
+    public boolean use(@PathVariable String account, @PathVariable String use, @RequestParam String number) {
+        boolean response = false;
+        Iterator<BDC> iterator = info(account).getBdc().iterator();
+        while(iterator.hasNext()) {
+            BDC bdc = iterator.next();
+            if(bdc.getNumber().equals(number)) {
+                if(use.equals("call")) {
+                    bdc.setValid(false);
+                    response = true;
+                } else if(use.equals("recall")) {
+                    bdc.setDest("");
+                    bdc.setValid(true);
+                    response = true;
+                }
+                break;
+            }
+        }
+        return response;
+    }
+*/
 
 
 }

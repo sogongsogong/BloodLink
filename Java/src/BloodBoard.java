@@ -32,27 +32,27 @@ import javax.swing.table.TableColumnModel;
 
 public class BloodBoard extends JFrame{
 	
-	private JTable table;//µ¥ÀÌÅÍ Å×ÀÌºí
-	private JScrollPane jScoll;//µ¥ÀÌÅÍ Å×ÀÌºíÀÌ µé¾î°¡´Â scroll
+	private JTable table;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½
+	private JScrollPane jscroll;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ï¿½ï¿½ ï¿½ï¿½î°¡ï¿½ï¿½ scroll
 	private DefaultTableModel mod;
-	private JLabel title;//Å¸ÀÌÆ² "ÇåÇ÷Áõ¼­»ç¿ë»óÅÂ"
-	private JComboBox<String> comboStandard, comboStatus;//Á¶È¸±âÁØÀÌ µé¾îÀÖ´Â ÄÞº¸¹Ú½º,½ÅÃ»»óÅÂ°¡ µé¾îÀÖ´Â ÄÞº¸¹Ú½º
-	private JTextField searchText;//°Ë»ö ÅØ½ºÆ® ÇÊµå
-	private JButton search,delete,approve;//»ç¿ëÇÒ ¹öÆ°µé
-	private String columnNames[]={ "Áõ¼­¹øÈ£", "»ç¿ëÀÚÀÌ¸§", "»ç¿ëÀÚÀÌ¸ÞÀÏ","½ÅÃ»»óÅÂ" };
-	private String rowData[][],rowDataTemp[][];//Å×ÀÌºí¿¡ µé¾î°¥ µ¥ÀÌÅÍµé
-	private CertificationList CertList;//ÇåÇ÷Áõ¸ñ·Ï
+	private JLabel title;//Å¸ï¿½ï¿½Æ² "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"
+	private JComboBox<String> comboStandard, comboStatus;//ï¿½ï¿½È¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½Þºï¿½ï¿½Ú½ï¿½,ï¿½ï¿½Ã»ï¿½ï¿½ï¿½Â°ï¿½ ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½Þºï¿½ï¿½Ú½ï¿½
+	private JTextField searchText;//ï¿½Ë»ï¿½ ï¿½Ø½ï¿½Æ® ï¿½Êµï¿½
+	private JButton search,delete,approve;//ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°ï¿½ï¿½
+	private String columnNames[]={ "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È£", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½ï¿½ï¿½","ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½" };
+	private String rowData[][],rowDataTemp[][];//ï¿½ï¿½ï¿½Ìºï¿½ ï¿½ï¿½î°¥ ï¿½ï¿½ï¿½ï¿½ï¿½Íµï¿½
+	private CertificationList CertList;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	private JFrame frame;
 	private String id;
 	
 	public BloodBoard(String id)
 	{
 		super("BLOOD_Board");
-		setLocation(360, 225);//ÇÁ·¹ÀÓÀ§Ä¡ ¼³Á¤
-		setSize(1200,730);// ÇÁ·¹ÀÓÅ©±â ¼³Á¤
+		setLocation(360, 225);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½
+		setSize(1200,730);// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		setContentPane(new JLabel(new ImageIcon("icon\\pulse1.jpg")));
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//close¹Ú½º
-		setLayout(null);//·¹ÀÌ¾Æ¿ô ³Î°ª
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//closeï¿½Ú½ï¿½
+		setLayout(null);//ï¿½ï¿½ï¿½Ì¾Æ¿ï¿½ ï¿½Î°ï¿½
 
 		this.id=id;
 		
@@ -60,18 +60,18 @@ public class BloodBoard extends JFrame{
 		Image img= tk.getImage("icon\\frameicon.png");
 		setIconImage(img);
 		
-		title = new JLabel("ÇåÇ÷Áõ¼­ »ç¿ë½ÅÃ» »óÅÂ");//title³Ö±â
+		title = new JLabel("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½");//titleï¿½Ö±ï¿½
 		title.setBounds(85, 50, 280, 40);
 		title.setFont(new Font("", 1, 25));
 		add(title);
 		
-		SearchInfo();//Å×ÀÌºí ³»¿ë Á¶È¸
+		SearchInfo();//ï¿½ï¿½ï¿½Ìºï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸
 		
-        TableSet(rowData);//Å×ÀÌºí »ý¼º ¹× ¼³Á¤
+        TableSet(rowData);//ï¿½ï¿½ï¿½Ìºï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
      
-		ComboBoxSet();//ÄÞº¸¹Ú½º»ý¼º
+		ComboBoxSet();//ï¿½Þºï¿½ï¿½Ú½ï¿½ï¿½ï¿½ï¿½ï¿½
 		
-		searchText = new JTextField();//searchÅØ½ºÆ®ÇÊÆ®
+		searchText = new JTextField();//searchï¿½Ø½ï¿½Æ®ï¿½ï¿½Æ®
 		searchText.setBounds(645,50,200,40);
 		searchText.setBackground(Color.WHITE);
 		searchText.setFont(new Font("", 1, 15));
@@ -95,7 +95,7 @@ public class BloodBoard extends JFrame{
 			public void keyPressed(KeyEvent e) {
 				if(e.getKeyCode() == KeyEvent.VK_ENTER)
 				{
-					search.doClick();//°Ë»ö Ä­¿¡¼­ ENTER Å° ÀÔ·Â½Ã "search"¹öÆ° Å¬¸¯
+					search.doClick();//ï¿½Ë»ï¿½ Ä­ï¿½ï¿½ï¿½ï¿½ ENTER Å° ï¿½Ô·Â½ï¿½ "search"ï¿½ï¿½Æ° Å¬ï¿½ï¿½
 				}
 				
 			}
@@ -103,7 +103,7 @@ public class BloodBoard extends JFrame{
 		searchText.addKeyListener(k);
 		Handler h = new Handler();
 		
-		ButtonSet();//¹öÆ°»ý¼º
+		ButtonSet();//ï¿½ï¿½Æ°ï¿½ï¿½ï¿½ï¿½
 		search.addActionListener(h);
 		delete.addActionListener(h);
 		approve.addActionListener(h);
@@ -117,13 +117,13 @@ public class BloodBoard extends JFrame{
 		{
 			if(event.getSource()==search)
 			{
-				if(searchText.getText().equals(""))//»õ·Î°íÄ§
+				if(searchText.getText().equals(""))//ï¿½ï¿½ï¿½Î°ï¿½Ä§
 				{
 					SearchInfo();
 					jscroll.setVisible(false);
 					TableSet(rowData);
 				}
-				else//°Ë»ö
+				else//ï¿½Ë»ï¿½
 				{
 					SearchInfo(searchText.getText(),comboStandard.getSelectedIndex(),comboStatus.getSelectedIndex());
 					jscroll.setVisible(false);
@@ -136,7 +136,7 @@ public class BloodBoard extends JFrame{
 		//	}
 		}
 	}
-	public void SearchInfo()//rowdataºÒ·¯¿À±â ¹× »õ·Î°íÄ§
+	public void SearchInfo()//rowdataï¿½Ò·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Î°ï¿½Ä§
 	{
 		try
 		{
@@ -166,7 +166,7 @@ public class BloodBoard extends JFrame{
 			
 		}
 	}
-	public void SearchInfo(String a,int index,int sindex)//rowdataºÒ·¯¿À±â ¹× »õ·Î°íÄ§
+	public void SearchInfo(String a,int index,int sindex)//rowdataï¿½Ò·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Î°ï¿½Ä§
 	{
 		try
 		{
@@ -178,9 +178,9 @@ public class BloodBoard extends JFrame{
 			int count=0;
 			String status="";
 			if(sindex==1)
-				status="»ç¿ë´ë±â";
+				status="ï¿½ï¿½ï¿½ï¿½ï¿½";
 			else if(sindex==2)
-				status="»ç¿ë¿Ï·á";
+				status="ï¿½ï¿½ï¿½Ï·ï¿½";
 			
 			while ((row = bf.readLine()) != null) 
 			{	
@@ -224,33 +224,33 @@ public class BloodBoard extends JFrame{
 	{
 		
 	}
-	public void ButtonSet()//buttonµé »ý¼º
+	public void ButtonSet()//buttonï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
-		search = new JButton("Á¶È¸");//search¹öÆ°
+		search = new JButton("ï¿½ï¿½È¸");//searchï¿½ï¿½Æ°
 		search.setBounds(855,50,80,40);
 		search.setFont(new Font("", 1, 15));
 		
-		delete = new JButton("»èÁ¦");//delete ¹öÆ°
+		delete = new JButton("ï¿½ï¿½ï¿½ï¿½");//delete ï¿½ï¿½Æ°
 		delete.setBounds(945,50,80,40);
 		delete.setFont(new Font("", 1, 15));
 
-		approve = new JButton("½ÂÀÎ");//approve ¹öÆ°
+		approve = new JButton("ï¿½ï¿½ï¿½ï¿½");//approve ï¿½ï¿½Æ°
 		approve.setBounds(1035,50,80,40);
 		approve.setFont(new Font("", 1, 15));
 		add(delete);
 		add(search);
 		add(approve);
 	}
-	public void ComboBoxSet()//combobox»ý¼º
+	public void ComboBoxSet()//comboboxï¿½ï¿½ï¿½ï¿½
 	{
-		String status[] = {"½ÅÃ»»óÅÂ(ÀüÃ¼)","»ç¿ë´ë±â","»ç¿ë¿Ï·á"};
-		comboStatus= new JComboBox<String>(status);//»ç¿ë»óÅÂ ÄÞº¸¹Ú½º»ý¼º
+		String status[] = {"ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½Ã¼)","ï¿½ï¿½ï¿½ï¿½ï¿½","ï¿½ï¿½ï¿½Ï·ï¿½"};
+		comboStatus= new JComboBox<String>(status);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Þºï¿½ï¿½Ú½ï¿½ï¿½ï¿½ï¿½ï¿½
 		comboStatus.setBounds(385,50,130,40);
 		comboStatus.setBackground(Color.WHITE);
 		comboStatus.setFont(new Font("", 1, 15));
 		
-		String standard[]= {"Áõ¼­¹øÈ£", "»ç¿ëÀÚÀÌ¸§", "»ç¿ëÀÚÀÌ¸ÞÀÏ" };
-		comboStandard = new JComboBox<String>(standard);//comboStandardbox»ý¼º
+		String standard[]= {"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È£", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½ï¿½ï¿½" };
+		comboStandard = new JComboBox<String>(standard);//comboStandardboxï¿½ï¿½ï¿½ï¿½
 		comboStandard.setBounds(525, 50, 110, 40);
 		comboStandard.setBackground(Color.WHITE);
 		comboStandard.setFont(new Font("", 1, 15));
@@ -261,45 +261,45 @@ public class BloodBoard extends JFrame{
 	public void TableSet(String Data[][])
 	{
 		mod= new DefaultTableModel(Data,columnNames) {
-			public boolean isCellEditable(int row,int column)//table ÀÓÀÇ·Î ¼öÁ¤ºÒ°¡
+			public boolean isCellEditable(int row,int column)//table ï¿½ï¿½ï¿½Ç·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò°ï¿½
 			{
 				return false;
 			}
 		};
-		table = new JTable(mod);//table»ý¼º
-		table.setSelectionMode(2);//´ÙÁß ¼±ÅÃ°¡´É
-		TableWidth();//table °£°Ý Á¶Àý
-        table.setFont(new Font("", 1, 15));//table font Å©±âÁ¶Àý
+		table = new JTable(mod);//tableï¿½ï¿½ï¿½ï¿½
+		table.setSelectionMode(2);//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½
+		TableWidth();//table ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        table.setFont(new Font("", 1, 15));//table font Å©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         table.setRowHeight(40);
-        TableFontSort();//±Û¾¾ °¡¿îµ¥ Á¤·Ä
+        TableFontSort();//ï¿½Û¾ï¿½ ï¿½ï¿½ï¿½îµ¥ ï¿½ï¿½ï¿½ï¿½
         
-        jscroll = new JScrollPane(table);//scroll »ý¼º
-		jscroll.setBounds(85, 120, 1030, 500);//Å©±â¼³Á¤
-		jscroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);//¼öÁ÷¹æÇâ½ºÅ©·Ñ
+        jscroll = new JScrollPane(table);//scroll ï¿½ï¿½ï¿½ï¿½
+		jscroll.setBounds(85, 120, 1030, 500);//Å©ï¿½â¼³ï¿½ï¿½
+		jscroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½â½ºÅ©ï¿½ï¿½
 		add(jscroll);
 		return ;
 	}
-	public void TableWidth()//Å×ÀÌºí ¿­ °£°ÝÁ¶Àý
+	public void TableWidth()//ï¿½ï¿½ï¿½Ìºï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	{
-		table.getColumn("Áõ¼­¹øÈ£").setPreferredWidth(5);
-		table.getColumn("»ç¿ëÀÚÀÌ¸§").setPreferredWidth(20);
-		table.getColumn("»ç¿ëÀÚÀÌ¸ÞÀÏ").setPreferredWidth(110);
-		table.getColumn("½ÅÃ»»óÅÂ").setPreferredWidth(10);
+		table.getColumn("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È£").setPreferredWidth(5);
+		table.getColumn("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½").setPreferredWidth(20);
+		table.getColumn("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½ï¿½ï¿½").setPreferredWidth(110);
+		table.getColumn("ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½").setPreferredWidth(10);
 	}
-	public void TableFontSort()//table ±Û¾¾ Á¤·Ä
+	public void TableFontSort()//table ï¿½Û¾ï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
-		// DefaultTableCellHeaderRenderer »ý¼º (°¡¿îµ¥ Á¤·ÄÀ» À§ÇÑ)
+		// DefaultTableCellHeaderRenderer ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½îµ¥ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 		DefaultTableCellRenderer tScheduleCellRenderer = new DefaultTableCellRenderer();
 
 				 
-		// DefaultTableCellHeaderRendererÀÇ Á¤·ÄÀ» °¡¿îµ¥ Á¤·Ä·Î ÁöÁ¤
+		// DefaultTableCellHeaderRendererï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½îµ¥ ï¿½ï¿½ï¿½Ä·ï¿½ ï¿½ï¿½ï¿½ï¿½
 		tScheduleCellRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 				
-		// Á¤·ÄÇÒ Å×ÀÌºíÀÇ ColumnModelÀ» °¡Á®¿È
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ï¿½ï¿½ ColumnModelï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		TableColumnModel tcmSchedule = table.getColumnModel();
 
 				 
-		// ¹Ýº¹¹®À» ÀÌ¿ëÇÏ¿© Å×ÀÌºíÀ» °¡¿îµ¥ Á¤·Ä·Î ÁöÁ¤
+		// ï¿½Ýºï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¿ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½îµ¥ ï¿½ï¿½ï¿½Ä·ï¿½ ï¿½ï¿½ï¿½ï¿½
 		for (int i = 0; i < tcmSchedule.getColumnCount(); i++) {
 		tcmSchedule.getColumn(i).setCellRenderer(tScheduleCellRenderer);
 		}

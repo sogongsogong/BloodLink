@@ -19,6 +19,9 @@ public class Bulletin {
     private int count;
     private String content;
 
+    public Bulletin() {
+    }
+
     public Bulletin(String title, String author, String name, int goal, String content) {
         this.title = title;
         this.author = author;
