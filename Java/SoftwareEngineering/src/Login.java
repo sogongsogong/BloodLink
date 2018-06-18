@@ -148,7 +148,7 @@ public class Login extends JFrame{
 	
 	public boolean findMember(String id,String pw)//id와 패스워드 확인
 	{
-		String member=new String(id+" "+pw);//id와 패스워드합침
+	/*	String member=new String(id+" "+pw);//id와 패스워드합침
 		System.out.println(member);
 
 		try
@@ -163,13 +163,13 @@ public class Login extends JFrame{
 		catch(Exception e)
 		{
 			
-		}
-	//	String result=db.getLogin(id, pw);
-	//	if(result.equals("true"))
-	//	return true;
-	//	else 
-	//	return false;
+		}*/
+		String result=db.getLogin(id, pw);
+		if(result.equals("true"))
+		return true;
+		else 
 		return false;
+	//	return false;
 	}
 	
 	public void buttonHide(JButton button)//button처리

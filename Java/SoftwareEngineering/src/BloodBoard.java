@@ -47,6 +47,7 @@ public class BloodBoard extends JFrame{
 	private JFrame frame;
 	private String id;
 	private BloodDB db;
+	
 	public BloodBoard(String id)
 	{
 		super("BLOOD_Board");
@@ -440,6 +441,107 @@ public class BloodBoard extends JFrame{
 		// 반복문을 이용하여 테이블을 가운데 정렬로 지정
 		for (int i = 0; i < tcmSchedule.getColumnCount(); i++) {
 		tcmSchedule.getColumn(i).setCellRenderer(tScheduleCellRenderer);
+		}
+	}
+	public void parsingData(String original)
+	{
+		String test="BDC{" +
+	            ", number='" + "2434" + '\'' +
+	            ", type='" + "b" + '\'' +
+	            ", name='" + "박준현" + '\'' +
+	            ", birth=" + "1996-02-26" +
+	            ", sex=" + "남" +
+	            ", date=" + "2018-06-18" +
+	            ", place='" + "경북대점" + '\'' +
+	            ", owner='" + "박준현" + '\'' +
+	            ", usage='" + "사용대기" + '\'' +
+	            ", valid=" + "true" +
+	            '}'
+	            +"BDC{" +
+	                    ", number='" + "2434" + '\'' +
+	                    ", type='" + "b" + '\'' +
+	                    ", name='" + "박준현" + '\'' +
+	                    ", birth=" + "1996-02-26" +
+	                    ", sex=" + "남" +
+	                    ", date=" + "2018-06-18" +
+	                    ", place='" + "경북대점" + '\'' +
+	                    ", owner='" + "박준현" + '\'' +
+	                    ", usage='" + "사용대기" + '\'' +
+	                    ", valid=" + "true" +
+	                    '}'
+	                    +"BDC{" +
+	                    ", number='" + "2434" + '\'' +
+	                    ", type='" + "b" + '\'' +
+	                    ", name='" + "박준현" + '\'' +
+	                    ", birth=" + "1996-02-26" +
+	                    ", sex=" + "남" +
+	                    ", date=" + "2018-06-18" +
+	                    ", place='" + "경북대점" + '\'' +
+	                    ", owner='" + "박준현" + '\'' +
+	                    ", usage='" + "사용대기" + '\'' +
+	                    ", valid=" + "true" +
+	                    '}';
+		//System.out.println(test);
+		String[] wow=test.split("BDC");
+		System.out.println(wow.length);
+		
+		ArrayList<String> wow3=new ArrayList<>();
+		//first parsing
+		String  wow2[][]=new String[wow.length-1][4];//1,5,9,11
+		System.out.println(wow2.length);
+		String temp2;
+		for(int i=0;i<wow.length;i++)
+		{
+			String[] temp=wow[i].split("'");
+			System.out.println(temp.length);
+			
+			for(int j=0;j<temp.length;j++)
+			{
+				if(j==1)
+				{
+					temp2=temp[j];
+					wow3.add(temp[j]);
+				}
+				if(j==5)
+				{
+					temp2=temp[j];
+					wow3.add(temp[j]);
+				}
+				if(j==9)
+				{	
+					temp2=temp[j];
+					wow3.add(temp[j]);
+				}
+				if(j==11)
+				{
+					temp2=temp[j];
+					wow3.add(temp[j]);
+				}
+				System.out.println("j= "+j+" "+temp[j]);
+			}
+		}
+		String[] a=new String[4];
+		int k=0;
+		int i=0;
+		int j=0;
+		for(k=0;k<wow3.size();k++)
+		{
+			a[i]=wow3.get(k);
+			if(i==3)
+			{
+				i=0;
+				wow2[j++]=a;
+			}
+			else
+				i++;
+		}
+		for(i=0;i<wow2.length;i++)
+		{
+			for(j=0;j<wow2[i].length;j++)
+			{
+				System.out.println(wow2[i][j]);
+			}
+			System.out.println("i="+i);
 		}
 	}
 }
