@@ -164,8 +164,7 @@ public class Login extends JFrame{
 			if(code == 200) {
 				reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			} else {
-				//연결안됨
-				//reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+				reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
 			}
 			StringBuffer buffer = new StringBuffer();
 			String string;

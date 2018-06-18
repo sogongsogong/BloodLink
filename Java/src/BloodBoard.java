@@ -14,7 +14,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -172,8 +177,35 @@ public class BloodBoard extends JFrame{
 	{
 		try
 		{
-			File is = new File("C:\\Users\\june\\Desktop\\BloodLink\\Java\\SoftwareEngineering\\table.txt");
-			BufferedReader bf = new BufferedReader(new FileReader(is));
+			//File is = new File("C:\\Users\\june\\Desktop\\BloodLink\\Java\\SoftwareEngineering\\table.txt");
+
+
+			String address = "http://localhost:8080/mi/" + id + "/queue";
+			URL url = new URL(address);
+			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+			BufferedReader bf = null;
+			int code = connection.getResponseCode();
+			if(code == 200) {
+				bf = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			} else {
+				bf = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+			}
+			List<String> list = new ArrayList<>();
+			String string;
+			while((string = bf.readLine()) != null) {
+				list.add(string);
+			}
+			bf.close();
+			connection.disconnect();
+
+			rowData=new String[list.size()][4];
+
+			Iterator<String> iterator = list.iterator();
+			for(int i = 0;iterator.hasNext();i++) {
+				rowData[i++]=iterator.next().split(" ");
+			}
+
+			/*BufferedReader bf = new BufferedReader(new FileReader(is));
 			String row;
 			ArrayList<String[]> rData=new ArrayList<String[]>();
 			int i=0;
@@ -183,14 +215,16 @@ public class BloodBoard extends JFrame{
 				i++;	   
 			}
 			bf.close();
-			bf=new BufferedReader(new FileReader(is));
-			
-			rowData=new String[i][4];
-			i=0;
-			while ((row = bf.readLine()) != null) 
+			bf=new BufferedReader(new FileReader(is));*/
+
+
+			//rowData=new String[i][4];
+			/*i=0;
+			while ((row = bf.readLine()) != null)
 			{	 
 				rowData[i++]=row.split(" ");   
-			}
+			}*/
+
 			return ;
 		}
 		catch(Exception e)
@@ -205,6 +239,7 @@ public class BloodBoard extends JFrame{
 		try
 		{
 			File is = new File("C:\\Users\\june\\Desktop\\BloodLink\\Java\\SoftwareEngineering\\table.txt");
+
 			BufferedReader bf = new BufferedReader(new FileReader(is));
 			String row;
 			ArrayList<String[]> rData=new ArrayList<String[]>();
@@ -260,7 +295,36 @@ public class BloodBoard extends JFrame{
 		
 		int i=0;
 		int j=0;
-		
+
+		while(true)
+		{
+			String address = "http://localhost:8080/mi/" + id + "/call?number=";
+			if(i==list[j])
+			{
+				if(rowData[i][3].equals("사용대기") || rowData[i][3].equals("true")) {
+					address += rowData[i][0];
+					HttpURLConnection connection = null;
+					try {
+						connection = (HttpURLConnection)new URL(address).openConnection();
+						connection.disconnect();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					if(j!=list.length-1)
+						j++;
+				}
+			}
+			i++;
+			if(i==rowData.length)
+				break;
+		}
+
+
+
+
+
+
+		/*
 		while(true)
 		{
 			
@@ -282,6 +346,7 @@ public class BloodBoard extends JFrame{
 				break;
 		}
         System.out.println(message);
+
         File file = new File("table.txt");
         FileWriter writer = null;
         
@@ -306,7 +371,9 @@ public class BloodBoard extends JFrame{
             {
                 e.printStackTrace();
             }
-        }
+        }*/
+
+
 	}
 	public void deleteInfo(int[] list)//삭제
 	{
@@ -314,7 +381,32 @@ public class BloodBoard extends JFrame{
 		
 		int i=0;
 		int j=0;
-		
+
+		while(true)
+		{
+			String address = "http://localhost:8080/mi/" + id + "/recall?number=";
+			if(i==list[j])
+			{
+				if(rowData[i][3].equals("사용완료") || rowData[i][3].equals("false")) {
+					address += rowData[i][0];
+					HttpURLConnection connection = null;
+					try {
+						connection = (HttpURLConnection)new URL(address).openConnection();
+						connection.disconnect();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					if(j!=list.length-1)
+						j++;
+				}
+			}
+			i++;
+			if(i==rowData.length)
+				break;
+		}
+
+
+		/*
 		System.out.println(list[0]);
 		System.out.println(rowData.length);
 		while(true)
@@ -360,7 +452,7 @@ public class BloodBoard extends JFrame{
             {
                 e.printStackTrace();
             }
-        }
+        }*/
 	}
 	public void ButtonSet()//button들 생성
 	{

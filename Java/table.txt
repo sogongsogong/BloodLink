@@ -1,6 +1,1 @@
-11052456 홍길동 liner@naver.com 사용대기
-12055456 박순렬 airline@naver.com 사용완료
-13452456 김민지 groot@naver.com 사용완료
-11035426 조영래 marvel@naver.com 사용대기
-31065456 이순신 wow020@naver.com 사용완료
-11044657 김유신 lnen@naver.com 사용완료
+18-06-191919 ?? bloodlink@knu.ac.kr true

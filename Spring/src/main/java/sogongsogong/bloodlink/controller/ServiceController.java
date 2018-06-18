@@ -175,10 +175,12 @@ public class ServiceController {
             bdc = bdcRepository.findByNumber(number);
             if(use.equals("call")) {
                 bdc.setValid(false);
+                bdcRepository.save(bdc);
                 response = true;
             } else if(use.equals("recall")) {
                 bdc.setDest("");
                 bdc.setValid(true);
+                bdcRepository.save(bdc);
                 response = true;
             }
         }
