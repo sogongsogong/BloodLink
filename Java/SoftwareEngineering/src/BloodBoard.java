@@ -58,14 +58,16 @@ public class BloodBoard extends JFrame{
 		super("BLOOD_Board");
 		setLocation(360, 225);//프레임위치 설정
 		setSize(1200,730);// 프레임크기 설정
-		setContentPane(new JLabel(new ImageIcon("icon\\pulse1.jpg")));
+		URL label=Login.class.getClassLoader().getResource("pulse1.jpg");
+		setContentPane(new JLabel(new ImageIcon(label)));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//close박스
 		setLayout(null);//레이아웃 널값
 		
 		this.id=id;//ID받아오기
 		
 		Toolkit tk=Toolkit.getDefaultToolkit();
-		Image img= tk.getImage("icon\\frameicon.png");
+		URL icon=Login.class.getClassLoader().getResource("frameicon.png");
+		Image img= tk.getImage(icon);
 		setIconImage(img);
 		
 		title = new JLabel("헌혈증서 사용신청 상태");//title넣기
