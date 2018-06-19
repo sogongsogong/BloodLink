@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.List;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,6 +15,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -31,6 +34,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+import javax.swing.text.html.HTMLDocument.Iterator;
 
 public class BloodBoard extends JFrame{
 	
@@ -42,8 +46,7 @@ public class BloodBoard extends JFrame{
 	private JTextField searchText;//검색 텍스트 필드
 	private JButton search,delete,approve;//사용할 버튼들
 	private String columnNames[]={ "증서번호", "사용자이름", "사용자이메일","신청상태" };
-	private String rowData[][],rowDataTemp[][];//테이블에 들어갈 데이터들
-	private CertificationList CertList;//헌혈증목록
+	private String rowData[][],rowDataTemp[][],original[][];//테이블에 들어갈 데이터들
 	private JFrame frame;
 	private String id;
 	private BloodDB db;
@@ -68,7 +71,7 @@ public class BloodBoard extends JFrame{
 		title.setFont(new Font("", 1, 25));
 		add(title);
 		
-		SearchInfo();//테이블 내용 조회
+		SearchInfo();//테이블 내용 조회 혹은 새로고침
 		
         TableSet(rowData);//테이블 생성 및 설정
      
@@ -173,8 +176,43 @@ public class BloodBoard extends JFrame{
 	{
 		try
 		{
-			File is = new File("C:\\Users\\june\\Desktop\\BloodLink\\Java\\SoftwareEngineering\\table.txt");
-			BufferedReader bf = new BufferedReader(new FileReader(is));
+			//File is = new File("C:\\Users\\june\\Desktop\\BloodLink\\Java\\SoftwareEngineering\\table.txt");
+
+
+			String address = "https://radiant-journey-86060.herokuapp.com/mi/" + id + "/queue";
+			URL url = new URL(address);
+			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+			BufferedReader bf = null;
+			int code = connection.getResponseCode();
+			if(code == 200) {
+				bf = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			} else {
+				bf = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+			}
+			java.util.List<String> list = new ArrayList<>();
+			String string;
+			while((string = bf.readLine()) != null) {
+				list.add(string);
+			}
+			bf.close();
+			connection.disconnect();
+
+			rowData=new String[list.size()][4];
+
+			java.util.Iterator<String> iterator = list.iterator();
+			for(int i = 0;iterator.hasNext();i++) {
+				rowData[i++]=iterator.next().split(" ");
+			}
+			for(int i=0;i<rowData.length;i++)//사용상태 바꾸기
+			{
+				if(rowData[i][3].equals("true"))
+					rowData[i][3]="사용대기";
+				else
+					rowData[i][3]="사용완료";
+			}
+			original=rowData;
+			return;
+			/*BufferedReader bf = new BufferedReader(new FileReader(is));
 			String row;
 			ArrayList<String[]> rData=new ArrayList<String[]>();
 			int i=0;
@@ -184,15 +222,16 @@ public class BloodBoard extends JFrame{
 				i++;	   
 			}
 			bf.close();
-			bf=new BufferedReader(new FileReader(is));
-			
-			rowData=new String[i][4];
-			i=0;
-			while ((row = bf.readLine()) != null) 
+			bf=new BufferedReader(new FileReader(is));*/
+
+
+			//rowData=new String[i][4];
+			/*i=0;
+			while ((row = bf.readLine()) != null)
 			{	 
 				rowData[i++]=row.split(" ");   
-			}
-			return ;
+			}*/
+
 		}
 		catch(Exception e)
 		{
@@ -203,9 +242,66 @@ public class BloodBoard extends JFrame{
 	}
 	public void SearchInfo(String a,int index,int sindex)//rowdata불러오기 및 새로고침
 	{
-		try
+		String[][] dataTemp=null;
+		int count=0;
+		
+		if(sindex==0)//신청상태(전체)
+		{
+			for(int i=0;i<original.length;i++)
+			{
+				if(original[i][index].equals(a))
+					count++;
+			}
+			dataTemp=new String[count][4];
+			count=0;
+			for(int i=0;i<original.length;i++)
+			{
+				if(original[i][index].equals(a))
+					dataTemp[count++]=original[i];
+			}
+			
+		}
+		else if(sindex==1)//사용대기
+		{
+			count=0;
+			for(int i=0;i<original.length;i++)
+			{
+				if(original[i][index].equals(a)&&original[i][3].equals("사용대기"))
+					count++;
+			}
+			dataTemp=new String[count][4];
+			count=0;
+			for(int i=0;i<original.length;i++)
+			{
+				if(original[i][index].equals(a)&&original[i][3].equals("사용대기"))
+					dataTemp[count++]=original[i];
+			}
+			
+		}
+		else if(sindex==2)//사용완료
+		{
+			count=0;
+			for(int i=0;i<original.length;i++)
+			{
+				if(original[i][index].equals(a)&&original[i][3].equals("사용완료"))
+					count++;
+			}
+			dataTemp=new String[count][4];
+			count=0;
+			for(int i=0;i<original.length;i++)
+			{
+				if(original[i][index].equals(a)&&original[i][3].equals("사용완료"))
+					dataTemp[count++]=original[i];
+			}
+		
+		}
+		rowData=new String[dataTemp.length][4];
+		rowData=dataTemp;
+		return;
+		/*	try
 		{
 			File is = new File("C:\\Users\\june\\Desktop\\BloodLink\\Java\\SoftwareEngineering\\table.txt");
+
 			BufferedReader bf = new BufferedReader(new FileReader(is));
 			String row;
 			ArrayList<String[]> rData=new ArrayList<String[]>();
@@ -253,7 +349,7 @@ public class BloodBoard extends JFrame{
 		catch(Exception e)
 		{
 			
-		}
+		}*/
 	}
 	public void approveInfo(int[] list)//승인
 	{
@@ -261,7 +357,31 @@ public class BloodBoard extends JFrame{
 		
 		int i=0;
 		int j=0;
-		
+
+		while(true)
+		{
+			String address = "https://radiant-journey-86060.herokuapp.com/mi/" + id + "/call?number=";
+			if(i==list[j])
+			{
+				if(rowData[i][3].equals("사용대기") || rowData[i][3].equals("true")) {
+					address += rowData[i][0];
+					HttpURLConnection connection = null;
+					try {
+						connection = (HttpURLConnection)new URL(address).openConnection();
+						connection.disconnect();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					if(j!=list.length-1)
+						j++;
+				}
+			}
+			i++;
+			if(i==rowData.length)
+				break;
+		}
+
+		/*
 		while(true)
 		{
 			
@@ -307,7 +427,9 @@ public class BloodBoard extends JFrame{
             {
                 e.printStackTrace();
             }
-        }
+        }*/
+
+
 	}
 	public void deleteInfo(int[] list)//삭제
 	{
@@ -315,7 +437,32 @@ public class BloodBoard extends JFrame{
 		
 		int i=0;
 		int j=0;
-		
+
+		while(true)
+		{
+			String address = "https://radiant-journey-86060.herokuapp.com/mi/" + id + "/recall?number=";
+			if(i==list[j])
+			{
+				if(rowData[i][3].equals("사용완료") || rowData[i][3].equals("false")) {
+					address += rowData[i][0];
+					HttpURLConnection connection = null;
+					try {
+						connection = (HttpURLConnection)new URL(address).openConnection();
+						connection.disconnect();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					if(j!=list.length-1)
+						j++;
+				}
+			}
+			i++;
+			if(i==rowData.length)
+				break;
+		}
+
+
+		/*
 		System.out.println(list[0]);
 		System.out.println(rowData.length);
 		while(true)
@@ -361,7 +508,7 @@ public class BloodBoard extends JFrame{
             {
                 e.printStackTrace();
             }
-        }
+        }*/
 	}
 	public void ButtonSet()//button들 생성
 	{
@@ -443,7 +590,7 @@ public class BloodBoard extends JFrame{
 		tcmSchedule.getColumn(i).setCellRenderer(tScheduleCellRenderer);
 		}
 	}
-	public void parsingData(String original)
+/*	public void parsingData(String original)
 	{
 		String test="BDC{" +
 	            ", number='" + "2434" + '\'' +
@@ -543,5 +690,5 @@ public class BloodBoard extends JFrame{
 			}
 			System.out.println("i="+i);
 		}
-	}
+	}*/
 }

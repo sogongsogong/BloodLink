@@ -14,10 +14,17 @@ import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URL;
 import java.util.Scanner;
 import java.util.TreeSet;
 
+import javax.net.ssl.HttpsURLConnection;
 import javax.swing.*;
 
 
@@ -32,6 +39,7 @@ public class Login extends JFrame{
 	private Container con;
 	private JLabel idLabel,pwLabel;
 	private BloodDB db;
+	
 	public Login()
 	{
 		super("BLOOD_LINK");
@@ -148,9 +156,35 @@ public class Login extends JFrame{
 	
 	public boolean findMember(String id,String pw)//id와 패스워드 확인
 	{
-	/*	String member=new String(id+" "+pw);//id와 패스워드합침
-		System.out.println(member);
+		boolean isLogin = false;
+		try {
+			String address = "https://radiant-journey-86060.herokuapp.com/mi/login";
+			URL url = new URL(address+"?account="+id+"&password="+pw);
+			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+			BufferedReader reader = null;
+			int code = connection.getResponseCode();
+			if(code == 200) {
+				reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			} else {
+				reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+			}
+			StringBuffer buffer = new StringBuffer();
+			String string;
+			while((string = reader.readLine()) != null) {
+				buffer.append(string);
+			}
+			reader.close();
+			connection.disconnect();
+			if(buffer.toString().equals("true")) {
+				isLogin = true;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return isLogin;
 
+		/*String member=new String(id+" "+pw);//id와 패스워드합침
+		System.out.println(member);
 		try
 		{
 			Scanner scan= new Scanner(new File("C:\\Users\\june\\Desktop\\BloodLink\\Java\\SoftwareEngineering\\member.txt"));
@@ -163,14 +197,15 @@ public class Login extends JFrame{
 		catch(Exception e)
 		{
 			
-		}*/
-		String result=db.getLogin(id, pw);
-		if(result.equals("true"))
-		return true;
-		else 
-		return false;
+		}
+	//	String result=db.getLogin(id, pw);
+	//	if(result.equals("true"))
+	//	return true;
+	//	else 
 	//	return false;
+		return false;*/
 	}
+	
 	
 	public void buttonHide(JButton button)//button처리
 	{

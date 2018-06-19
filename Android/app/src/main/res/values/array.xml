@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer-array name="order">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </integer-array>
+
+    <string-array name="title">
+        <item>빨간 국화입니다.</item>
+        <item>황량한 사막입니다.</item>
+        <item>예쁜 수국입니다.</item>
+        <item>투명한 해파리입니다.</item>
+        <item>귀여운 코알라입니다.</item>
+        <item>멋진 등대입니다.</item>
+        <item>사이좋은 펭귄입니다.</item>
+        <item>노란 튤립입니다.</item>
+    </string-array>
+
+    <string-array name="writer">
+        <item>빨간국화</item>
+        <item>사막이</item>
+        <item>예쁜수국</item>
+        <item>투명한해파리</item>
+        <item>귀여운코알라</item>
+        <item>멋진등대</item>
+        <item>사이좋은펭귄</item>
+        <item>노란튤립</item>
+    </string-array>
+
+    <integer-array name="goal">
+        <item>100</item>
+        <item>60</item>
+        <item>30</item>
+        <item>50</item>
+        <item>200</item>
+        <item>10</item>
+        <item>54</item>
+        <item>23</item>
+    </integer-array>
+
+    <string-array name="contents">
+        <item>동해물과 백두산이 마르고 닳도록 하느님이 보우하사</item>
+        <item>동해물과 백두산이 마르고 닳도록 하느님이 보우하사</item>
+        <item>동해물과 백두산이 마르고 닳도록 하느님이 보우하사</item>
+        <item>동해물과 백두산이 마르고 닳도록 하느님이 보우하사</item>
+        <item>동해물과 백두산이 마르고 닳도록 하느님이 보우하사</item>
+        <item>동해물과 백두산이 마르고 닳도록 하느님이 보우하사</item>
+        <item>동해물과 백두산이 마르고 닳도록 하느님이 보우하사</item>
+        <item>동해물과 백두산이 마르고 닳도록 하느님이 보우하사</item>
+    </string-array>
+</resources>
