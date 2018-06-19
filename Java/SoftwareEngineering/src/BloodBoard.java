@@ -17,6 +17,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -186,7 +188,7 @@ public class BloodBoard extends JFrame{
 			//File is = new File("C:\\Users\\june\\Desktop\\BloodLink\\Java\\SoftwareEngineering\\table.txt");
 
 
-			String address = "https://radiant-journey-86060.herokuapp.com/mi/" + id + "/queue";
+			String address = "https://lit-escarpment-60921.herokuapp.com/mi/" + id + "/queue";
 			URL url = new URL(address);
 			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 			BufferedReader bf = null;
@@ -268,10 +270,13 @@ public class BloodBoard extends JFrame{
 			else if(index==2)
 				key="account";
 			String param="?state="+state;
-			if(!a.equals(""))
-				param +="&"+"key="+key+"&value="+a;//all. wait, used ;
-			
-			String address = "https://radiant-journey-86060.herokuapp.com/mi/" + id + "/queue";
+		//	System.out.println("a="+a);
+		//	System.out.println("index="+index);
+			if(!a.equals("")) {
+				param +="&key="+key+"&value="+a;//all. wait, used ;
+				System.out.println(a);
+			}
+			String address = "https://lit-escarpment-60921.herokuapp.com/mi/" + id + "/queue";
 			URL url = new URL(address+param);
 			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 			BufferedReader bf = null;
@@ -286,6 +291,7 @@ public class BloodBoard extends JFrame{
 			while((string = bf.readLine()) != null) {
 				list.add(string);
 			}
+			System.out.println(list.toString());
 			bf.close();
 			connection.disconnect();
 
@@ -448,7 +454,7 @@ public class BloodBoard extends JFrame{
 
 		while(true)
 		{
-			String address = "https://radiant-journey-86060.herokuapp.com/mi/" + id + "/call?number=";
+			String address = "https://lit-escarpment-60921.herokuapp.com/mi/" + id + "/call?number=";
 			if(i==list[j])
 			{
 				if(rowData[i][3].equals("사용대기") || rowData[i][3].equals("true")) {
@@ -528,7 +534,7 @@ public class BloodBoard extends JFrame{
 
 		while(true)
 		{
-			String address = "https://radiant-journey-86060.herokuapp.com/mi/" + id + "/recall?number=";
+			String address = "https://lit-escarpment-60921.herokuapp.com/mi/" + id + "/recall?number=";
 			if(i==list[j])
 			{
 				if(rowData[i][3].equals("사용완료") || rowData[i][3].equals("false")) {

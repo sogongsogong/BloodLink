@@ -158,7 +158,7 @@ public class Login extends JFrame{
 	{
 		boolean isLogin = false;
 		try {
-			String address = "https://radiant-journey-86060.herokuapp.com/mi/login";
+			String address = "https://lit-escarpment-60921.herokuapp.com/mi/login";
 			URL url = new URL(address+"?account="+id+"&password="+pw);
 			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 			BufferedReader reader = null;
@@ -166,6 +166,7 @@ public class Login extends JFrame{
 			if(code == 200) {
 				reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			} else {
+				System.out.println(code);
 				reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
 			}
 			StringBuffer buffer = new StringBuffer();
