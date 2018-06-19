@@ -306,6 +306,12 @@ public class BloodBoard extends JFrame{
 					HttpURLConnection connection = null;
 					try {
 						connection = (HttpURLConnection)new URL(address).openConnection();
+						int code = connection.getResponseCode();
+						if(code == 200) {
+							System.out.println("success");
+						} else {
+							System.out.println("fail");
+						}
 						connection.disconnect();
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -392,6 +398,12 @@ public class BloodBoard extends JFrame{
 					HttpURLConnection connection = null;
 					try {
 						connection = (HttpURLConnection)new URL(address).openConnection();
+						int code = connection.getResponseCode();
+						if(code == 200) {
+							System.out.println("success");
+						} else {
+							System.out.println("fail");
+						}
 						connection.disconnect();
 					} catch (IOException e) {
 						e.printStackTrace();

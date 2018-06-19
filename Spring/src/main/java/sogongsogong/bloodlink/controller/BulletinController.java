@@ -32,10 +32,10 @@ public class BulletinController {
 
     @RequestMapping(value = "/search", method = GET)
     public List<Bulletin> search(@RequestParam(required = false) String key, @RequestParam(required = false) String value) {
-        List<Bulletin> bulletins = bulletinRepository.findByExpire(false);
-        Iterator<Bulletin> iterator = bulletins.iterator();
+        //List<Bulletin> bulletins = bulletinRepository.findByExpire(false);
+        //Iterator<Bulletin> iterator = bulletins.iterator();
         List<Bulletin> list = new ArrayList<>();
-        while(iterator.hasNext()) {
+        /*while(iterator.hasNext()) {
             Bulletin bulletin = iterator.next();
             boolean match = false;
             if(key == null || value == null) {
@@ -51,7 +51,7 @@ public class BulletinController {
                 list.add(bulletin);
             }
         }
-        /*
+        */
         if(key == null || value == null) {
             list = new ArrayList<>();
             Iterable<Bulletin> bulletins = bulletinRepository.findAll();
@@ -74,7 +74,7 @@ public class BulletinController {
                     list = bulletinRepository.findByExpire(false);
                 }
             }
-        }*/
+        }
         return list;
     }
 /*

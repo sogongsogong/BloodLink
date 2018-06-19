@@ -42,11 +42,11 @@ public class ServiceController {
         Map<String, String> map = new HashMap<>();
         BDC bdc = bdcRepository.findByNumber(number);
         if(bdc != null && bdc.isValid()) {
-            if (target.equals("donee")) {
+            if (target.equals("donee") && donorRepository.existsByAccount(account)) {
                 bdc.setOwner(account);
                 //send = true;
                 result = "success";
-            } else if (target.equals("mi")) {
+            } else if (target.equals("mi") && miRepository.existsByAccount(account)) {
                 bdc.setDest(account);
                 //send = true;
                 result = "success";
@@ -113,7 +113,7 @@ public class ServiceController {
 
 
     @RequestMapping(value = "/mi/{account}/queue", method = GET)
-    public String queue(@PathVariable String account, @RequestParam(required = false) String stat, @RequestParam(required = false) String key, @RequestParam(required = false) String value) {
+    public String queue(@PathVariable String account, @RequestParam(required = false) String state, @RequestParam(required = false) String key, @RequestParam(required = false) String value) {
         List<BDC> bdcs = bdcRepository.findByDest(account);
         Iterator<BDC> iterator = bdcs.iterator();
         StringBuffer buffer = new StringBuffer();
@@ -122,15 +122,15 @@ public class ServiceController {
             BDC bdc = iterator.next();
             Donor donor = (Donor)donorRepository.findByAccount(bdc.getOwner());
             boolean match = false;
-            if(stat == null || stat.equals("all")) {
+            if(state == null || state.equals("all")) {
                 if(key==null && value==null) {
                     match = true;
                 }
-            } else if(stat.equals("used")) {
+            } else if(state.equals("used")) {
                 if(!bdc.isValid()) {
                     match = join(key, value, bdc, donor);
                 }
-            } else if(stat.equals("wait")) {
+            } else if(state.equals("wait")) {
                 if(bdc.isValid()) {
                     match = join(key, value, bdc, donor);
                 }
