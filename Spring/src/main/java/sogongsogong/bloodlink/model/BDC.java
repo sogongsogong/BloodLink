@@ -1,18 +1,19 @@
 package sogongsogong.bloodlink.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.persistence.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 @Entity
 public class BDC {
 
-    @Id
+    /*@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer bdcId;
-
+    private Integer bdcId;*/
+    @Id
     private String number;
     private String type;
     private String name;
@@ -20,23 +21,37 @@ public class BDC {
     private boolean sex;
     private Calendar date;
     private String place;
+
+    //@ManyToOne(optional=false, targetEntity=Donor.class)
+    //@JoinColumn(name="owner", referencedColumnName = "account")
     private String owner;
-    private String usage;
+
+    //@ManyToOne(optional=false, targetEntity=MI.class)
+    //@JoinColumn(name="dest", referencedColumnName = "account")
+    private String dest;
+
     private boolean valid;
 
-    public BDC(String number, String type, String name, Calendar birth, boolean sex, Calendar date, String place, String owner) {
+    public BDC() {
+    }
+
+    //public BDC(String number, String type, String name, Calendar birth, boolean sex, Calendar date, String place, String owner) {
+    public BDC(String number, String type, String name, String birth, boolean sex, String date, String place, String owner) {
         this.number = number;
         this.type = type;
         this.name = name;
-        this.birth = birth;
+        //this.birth = birth;
+        this.birth = stringToCalendar(birth);
         this.sex = sex;
-        this.date = date;
+        //this.date = date;
+        this.date = stringToCalendar(date);
         this.place = place;
         this.owner = owner;
-        this.usage = "";
+        this.dest = "";
         this.valid = false;
     }
 
+    /*
     public Integer getBdcId() {
         return bdcId;
     }
@@ -44,6 +59,7 @@ public class BDC {
     public void setBdcId(Integer bdcId) {
         this.bdcId = bdcId;
     }
+    */
 
     public String getNumber() {
         return number;
@@ -109,12 +125,12 @@ public class BDC {
         this.owner = owner;
     }
 
-    public String getUsage() {
-        return usage;
+    public String getDest() {
+        return dest;
     }
 
-    public void setUsage(String usage) {
-        this.usage = usage;
+    public void setDest(String dest) {
+        this.dest = dest;
     }
 
     public boolean isValid() {
@@ -125,19 +141,13 @@ public class BDC {
         this.valid = valid;
     }
 
-    @Override
-    public String toString() {
-        return "BDC{" +
-                ", number='" + number + '\'' +
-                ", type='" + type + '\'' +
-                ", name='" + name + '\'' +
-                ", birth=" + birth +
-                ", sex=" + sex +
-                ", date=" + date +
-                ", place='" + place + '\'' +
-                ", owner='" + owner + '\'' +
-                ", usage='" + usage + '\'' +
-                ", valid=" + valid +
-                '}';
+    public Calendar stringToCalendar(String string) {
+        Calendar calendar = Calendar.getInstance();
+        try {
+            calendar.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(string));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return calendar;
     }
 }

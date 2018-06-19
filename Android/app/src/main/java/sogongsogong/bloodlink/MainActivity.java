@@ -50,7 +50,7 @@
 //        return super.onOptionsItemSelected(item);
 //    }
 //}
-package com.example.yeongrae.myapplication;
+package sogongsogong.bloodlink;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;

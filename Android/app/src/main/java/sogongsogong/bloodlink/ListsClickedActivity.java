@@ -1,4 +1,4 @@
-package com.example.yeongrae.myapplication;
+package sogongsogong.bloodlink;
 
 import android.content.Intent;
 import android.support.annotation.Nullable;
