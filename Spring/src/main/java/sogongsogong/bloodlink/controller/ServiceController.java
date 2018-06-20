@@ -120,7 +120,7 @@ public class ServiceController {
         while(iterator.hasNext()) {
             String string;
             BDC bdc = iterator.next();
-            Donor donor = (Donor)donorRepository.findByAccount(bdc.getOwner());
+            Donor donor = donorRepository.findByAccount(bdc.getOwner());
             boolean match = false;
             if(state == null || state.equals("all")) {
                 if(key==null && value==null) {

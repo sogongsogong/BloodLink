@@ -71,7 +71,8 @@ public class DonorController {
         if(list != null) {
             Iterator iterator = list.iterator();
             while(iterator.hasNext()) {
-                buffer.append(iterator.next().toString()+"\n");
+                buffer.append(iterator.next().toString());
+                buffer.append('\n');
             }
         }
         return buffer.toString();

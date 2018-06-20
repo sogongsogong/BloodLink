@@ -7,7 +7,7 @@ import sogongsogong.bloodlink.model.MI;
 import javax.transaction.Transactional;
 import java.util.List;
 
-@Transactional
+//@Transactional
 @RepositoryRestResource(collectionResourceRel = "mi", path = "mi")
 //public interface MIRepository extends UserRepository<MI> {
 public interface MIRepository extends CrudRepository<MI, Integer> {

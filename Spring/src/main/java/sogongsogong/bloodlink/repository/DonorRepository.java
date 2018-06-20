@@ -7,7 +7,7 @@ import sogongsogong.bloodlink.model.Donor;
 import javax.transaction.Transactional;
 import java.util.List;
 
-@Transactional
+//@Transactional
 @RepositoryRestResource(collectionResourceRel = "donor", path = "donor")
 //public interface DonorRepository extends UserRepository<Donor> {
 public interface DonorRepository extends CrudRepository<Donor, Integer> {
