@@ -43,17 +43,20 @@ public class Login extends JFrame{
 	public Login()
 	{
 		super("BLOOD_LINK");
-		setContentPane(new JLabel(new ImageIcon("icon\\heart.jpg")));
+		URL label=Login.class.getClassLoader().getResource("heart.jpg");
+		setContentPane(new JLabel(new ImageIcon(label)));
 		setLocation(730, 300);//프레임위치 설정
 		setSize(550,400);// 프레임크기 설정
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//close박스
 		setLayout(null);//레이아웃 널값
 		
 		Toolkit tk=Toolkit.getDefaultToolkit();
-		Image img= tk.getImage("icon\\frameicon.png");
+		URL icon=Login.class.getClassLoader().getResource("frameicon.png");
+		Image img= tk.getImage(icon);
 		setIconImage(img);
 		
-		title=new JButton(new ImageIcon("icon\\BloodLink로고.png"));
+		URL logo=Login.class.getClassLoader().getResource("BloodLink로고.png");
+		title=new JButton(new ImageIcon(logo));
 		title.setBounds(68, 20, 415, 120);
 		add(title);
 	    buttonHide(title);
@@ -101,9 +104,11 @@ public class Login extends JFrame{
 		loginPan.setOpaque(false);
 		add(loginPan);
 		
-		LoginButton=new JButton(new ImageIcon("icon\\loginbutton.png"));
+		URL imageURL=Login.class.getClassLoader().getResource("loginbutton.png");
+		LoginButton=new JButton(new ImageIcon(imageURL));
 		LoginButton.setBackground(Color.WHITE);
-		ExitButton=new JButton(new ImageIcon("icon\\exitbutton.png"));
+		URL image2=Login.class.getClassLoader().getResource("exitbutton.png");
+		ExitButton=new JButton(new ImageIcon(image2));
 		ExitButton.setBackground(Color.WHITE);
 	
 		pan=new JPanel(new GridLayout(1, 2, 4, 4));
@@ -158,7 +163,7 @@ public class Login extends JFrame{
 	{
 		boolean isLogin = false;
 		try {
-			String address = "https://radiant-journey-86060.herokuapp.com/mi/login";
+			String address = "https://lit-escarpment-60921.herokuapp.com/mi/login";
 			URL url = new URL(address+"?account="+id+"&password="+pw);
 			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 			BufferedReader reader = null;
@@ -166,6 +171,7 @@ public class Login extends JFrame{
 			if(code == 200) {
 				reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			} else {
+				System.out.println(code);
 				reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
 			}
 			StringBuffer buffer = new StringBuffer();

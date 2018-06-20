@@ -17,6 +17,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -56,14 +58,16 @@ public class BloodBoard extends JFrame{
 		super("BLOOD_Board");
 		setLocation(360, 225);//프레임위치 설정
 		setSize(1200,730);// 프레임크기 설정
-		setContentPane(new JLabel(new ImageIcon("icon\\pulse1.jpg")));
+		URL label=Login.class.getClassLoader().getResource("pulse1.jpg");
+		setContentPane(new JLabel(new ImageIcon(label)));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//close박스
 		setLayout(null);//레이아웃 널값
 		
 		this.id=id;//ID받아오기
 		
 		Toolkit tk=Toolkit.getDefaultToolkit();
-		Image img= tk.getImage("icon\\frameicon.png");
+		URL icon=Login.class.getClassLoader().getResource("frameicon.png");
+		Image img= tk.getImage(icon);
 		setIconImage(img);
 		
 		title = new JLabel("헌혈증서 사용신청 상태");//title넣기
@@ -125,7 +129,14 @@ public class BloodBoard extends JFrame{
 			{
 				if(searchText.getText().equals(""))//새로고침
 				{
-					SearchInfo();
+					if(comboStatus.getSelectedIndex()==0)
+					{
+						SearchInfo();
+					}
+					else
+					{
+						SearchInfo(searchText.getText(),comboStandard.getSelectedIndex(),comboStatus.getSelectedIndex());
+					}
 					jscroll.setVisible(false);
 					TableSet(rowData);
 				}
@@ -179,7 +190,7 @@ public class BloodBoard extends JFrame{
 			//File is = new File("C:\\Users\\june\\Desktop\\BloodLink\\Java\\SoftwareEngineering\\table.txt");
 
 
-			String address = "https://radiant-journey-86060.herokuapp.com/mi/" + id + "/queue";
+			String address = "https://lit-escarpment-60921.herokuapp.com/mi/" + id + "/queue";
 			URL url = new URL(address);
 			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 			BufferedReader bf = null;
@@ -242,7 +253,92 @@ public class BloodBoard extends JFrame{
 	}
 	public void SearchInfo(String a,int index,int sindex)//rowdata불러오기 및 새로고침
 	{
-		String[][] dataTemp=null;
+		try
+		{
+			//File is = new File("C:\\Users\\june\\Desktop\\BloodLink\\Java\\SoftwareEngineering\\table.txt");
+
+			String state="";
+			String key="";
+			if(sindex==0)
+				state="all";//key=number,account,mail
+			else if(sindex==1)
+				state="wait";
+			else 
+				state="used";
+			if(index==0)
+				key="number";
+			else if(index==1)
+				key="name";
+			else if(index==2)
+				key="account";
+			String param="?state="+state;
+		//	System.out.println("a="+a);
+		//	System.out.println("index="+index);
+			if(!a.equals("")) {
+				param +="&key="+key+"&value="+a;//all. wait, used ;
+				System.out.println(a);
+			}
+			String address = "https://lit-escarpment-60921.herokuapp.com/mi/" + id + "/queue";
+			URL url = new URL(address+param);
+			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+			BufferedReader bf = null;
+			int code = connection.getResponseCode();
+			if(code == 200) {
+				bf = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			} else {
+				bf = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+			}
+			java.util.List<String> list = new ArrayList<>();
+			String string;
+			while((string = bf.readLine()) != null) {
+				list.add(string);
+			}
+			System.out.println(list.toString());
+			bf.close();
+			connection.disconnect();
+
+			rowData=new String[list.size()][4];
+
+			java.util.Iterator<String> iterator = list.iterator();
+			for(int i = 0;iterator.hasNext();i++) {
+				rowData[i++]=iterator.next().split(" ");
+			}
+			for(int i=0;i<rowData.length;i++)//사용상태 바꾸기
+			{
+				if(rowData[i][3].equals("true"))
+					rowData[i][3]="사용대기";
+				else
+					rowData[i][3]="사용완료";
+			}
+			original=rowData;
+			return;
+			/*BufferedReader bf = new BufferedReader(new FileReader(is));
+			String row;
+			ArrayList<String[]> rData=new ArrayList<String[]>();
+			int i=0;
+			
+			while ((row = bf.readLine()) != null) 
+			{	 
+				i++;	   
+			}
+			bf.close();
+			bf=new BufferedReader(new FileReader(is));*/
+
+
+			//rowData=new String[i][4];
+			/*i=0;
+			while ((row = bf.readLine()) != null)
+			{	 
+				rowData[i++]=row.split(" ");   
+			}*/
+
+		}
+		catch(Exception e)
+		{
+			
+		}
+	//	String result=db.getRowData(id);
+		/*String[][] dataTemp=null;
 		int count=0;
 		
 		if(sindex==0)//신청상태(전체)
@@ -297,7 +393,7 @@ public class BloodBoard extends JFrame{
 		}
 		rowData=new String[dataTemp.length][4];
 		rowData=dataTemp;
-		return;
+		return;*/
 		/*	try
 		{
 			File is = new File("C:\\Users\\june\\Desktop\\BloodLink\\Java\\SoftwareEngineering\\table.txt");
@@ -360,7 +456,7 @@ public class BloodBoard extends JFrame{
 
 		while(true)
 		{
-			String address = "https://radiant-journey-86060.herokuapp.com/mi/" + id + "/call?number=";
+			String address = "https://lit-escarpment-60921.herokuapp.com/mi/" + id + "/call?number=";
 			if(i==list[j])
 			{
 				if(rowData[i][3].equals("사용대기") || rowData[i][3].equals("true")) {
@@ -440,7 +536,7 @@ public class BloodBoard extends JFrame{
 
 		while(true)
 		{
-			String address = "https://radiant-journey-86060.herokuapp.com/mi/" + id + "/recall?number=";
+			String address = "https://lit-escarpment-60921.herokuapp.com/mi/" + id + "/recall?number=";
 			if(i==list[j])
 			{
 				if(rowData[i][3].equals("사용완료") || rowData[i][3].equals("false")) {
